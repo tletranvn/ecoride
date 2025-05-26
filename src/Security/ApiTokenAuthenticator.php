@@ -25,7 +25,7 @@ class ApiTokenAuthenticator extends AbstractAuthenticator
     {
        return $request->headers->has('X-AUTH-TOKEN');
     }
-s
+    
     public function authenticate(Request $request): Passport
     {
         $apitoken = $request->headers->get('X-AUTH-TOKEN');

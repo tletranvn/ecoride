@@ -3,6 +3,98 @@
 {% block title %}Accueil - EcoRide{% endblock %}
 
 {% block body %}
-    <h1 class="text-primary">Bienvenue sur EcoRide !</h1>
-    <p>Une plateforme de covoiturage écologique.</p>
+<div class="d-flex flex-column min-vh-100">
+    <main class="container flex-grow-1 mt-5">
+
+        <!-- ✅ Bandeau principal -->
+        <div class="text-center mb-5">
+            <h1 class="display-4">Bienvenue sur <strong>EcoRide</strong> 🚗🌱</h1>
+            <p class="lead">Partagez vos trajets, réduisez vos émissions de CO₂, et roulez vers un avenir plus vert.</p>
+        </div>
+
+        <!-- ✅ Zone dynamique si connecté -->
+        <div id="connected-home" class="alert alert-success d-none text-center">
+            Bonjour <span id="home-pseudo"></span> 👋<br>
+            <a href="/mes-trajets" class="btn btn-outline-success mt-3">Voir mes trajets</a>
+        </div>
+
+        <!-- ✅ Présentation EcoRide -->
+        <section class="mb-5">
+            <!-- ✅ Présentation de l'entreprise -->
+            <div class="text-center mb-5">
+                <p class="fs-5">
+                    <strong>EcoRide</strong> est une plateforme de covoiturage éco-responsable fondée en 2025, 
+                    avec pour mission de rendre les déplacements plus durables et accessibles à tous. 
+                    Nous croyons en une mobilité respectueuse de l’environnement, humaine et équitable. 
+                    Chaque trajet partagé est un pas de plus vers une planète plus verte et une société plus solidaire.
+                </p>
+            </div>
+            <h2 class="text-center mb-4">Pourquoi choisir EcoRide ?</h2>
+            <div class="row text-center">
+                <div class="col-md-4 mb-4">
+                    <h4>🌍 Écologique</h4>
+                    <p>En partageant vos trajets, vous réduisez les émissions de gaz à effet de serre et contribuez à un environnement plus sain.</p>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <h4>💶 Économique</h4>
+                    <p>Grâce à un système de crédits, rouler devient plus équitable et avantageux pour tous les membres.</p>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <h4>🤝 Communautaire</h4>
+                    <p>Rejoignez une communauté engagée, solidaire, et partagez vos trajets dans une ambiance conviviale et respectueuse.</p>
+                </div>
+            </div>
+            
+        </section>
+
+        <!-- ✅ Section images -->
+        <section class="mb-5">
+            <h2 class="text-center mb-4">Notre vision en images</h2>
+            <div class="row text-center">
+                <div class="col-md-4 mb-4">
+                    <img src="/images/ecoride1.jpg" alt="Trajet partagé en nature" class="img-fluid rounded shadow-sm">
+                    <p class="mt-2">Des trajets respectueux de la nature</p>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <img src="/images/ecoride2.jpg" alt="Conducteur heureux" class="img-fluid rounded shadow-sm">
+                    <p class="mt-2">Des rencontres humaines</p>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <img src="/images/ecoride3.jpg" alt="Carte et économie de CO2" class="img-fluid rounded shadow-sm">
+                    <p class="mt-2">Une action concrète pour la planète</p>
+                </div>
+            </div>
+            <!-- ✅ Zone pour visiteurs non connectés -->
+            <div id="guest-home" class="text-center mb-4">
+                <p class="fs-5">Rejoignez-nous dès maintenant pour covoiturer autrement !</p>
+                <a href="/login" class="btn btn-primary me-2">Connexion</a>
+                <a href="/register" class="btn btn-outline-primary">Inscription</a>
+            </div>
+        </section>
+
+    </main>
+
+
+</div>
+
+<!-- ✅ Script dynamique d’accueil -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const token = localStorage.getItem('apiToken');
+        const pseudo = localStorage.getItem('pseudo');
+
+        const connectedBlock = document.getElementById('connected-home');
+        const guestBlock = document.getElementById('guest-home');
+        const pseudoSpan = document.getElementById('home-pseudo');
+
+        if (token && pseudo) {
+            connectedBlock?.classList.remove('d-none');
+            guestBlock?.classList.add('d-none');
+            if (pseudoSpan) pseudoSpan.textContent = pseudo;
+        } else {
+            guestBlock?.classList.remove('d-none');
+            connectedBlock?.classList.add('d-none');
+        }
+    });
+</script>
 {% endblock %}
