@@ -1,0 +1,56 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Inscription{% endblock %}
+
+{% block body %}
+    <h1>Créer un compte</h1>
+
+    <form method="POST" action="{{ path('app_api_registration') }}" id="registerForm">
+        <div class="mb-3">
+            <label for="pseudo" class="form-label">Pseudo</label>
+            <input type="text" name="pseudo" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" name="email" class="form-control" required>
+        </div>
+        <div class="mb-3">
+            <label for="password" class="form-label">Mot de passe</label>
+            <input type="password" name="password" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-primary">S'inscrire</button>
+    </form>
+
+    <div id="message" class="mt-3"></div>
+
+    <script>
+        document.getElementById('registerForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const form = e.target;
+            const data = {
+                pseudo: form.pseudo.value,
+                email: form.email.value,
+                password: form.password.value
+            };
+
+            const response = await fetch('/api/registration', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            });
+
+            const result = await response.json();
+            const messageDiv = document.getElementById('message');
+
+            if (response.status === 201) {
+                messageDiv.innerHTML = `<div class="alert alert-success">Compte créé avec succès pour ${result.user}</div>`;
+                form.reset();
+            } else {
+                messageDiv.innerHTML = `<div class="alert alert-danger">Erreur : ${result.message || 'Échec de l’inscription'}</div>`;
+            }
+        });
+    </script>
+{% endblock %}
