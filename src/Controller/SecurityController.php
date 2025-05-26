@@ -98,6 +98,7 @@ class SecurityController extends AbstractController
     *         @OA\JsonContent(
     *             type="object",
     *             @OA\Property(property="user", type="string", example="Nom d'utilisateur"),
+    *             @OA\Property(property="email", type="string", example="Email de l'utilisateur"),
     *             @OA\Property(property="apiToken", type="string", example="31a023e212f116124a36af14ea0c1c3806eb9378"),
     *             @OA\Property(property="pseudo", type="string", example="Pseudo de l'utilisateur"),
     *             @OA\Property(property="roles", type="array", @OA\Items(type="string", example="ROLE_USER"))
@@ -111,7 +112,7 @@ class SecurityController extends AbstractController
                 return new JsonResponse(['message' => 'Missing credentials'], Response::HTTP_UNAUTHORIZED);
             }
             // If the user is authenticated, you can return their information
-            return new JsonResponse(['user' => $user->getUserIdentifier(), 'apiToken' => $user->getApiToken(), 'pseudo' => $user->getPseudo(), 'roles' => $user->getRoles()], Response::HTTP_OK);
+            return new JsonResponse(['user' => $user->getUserIdentifier(), 'email' => $user->getEmail(),'apiToken' => $user->getApiToken(), 'pseudo' => $user->getPseudo(), 'roles' => $user->getRoles()], Response::HTTP_OK);
         }
 
 

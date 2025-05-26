@@ -4,49 +4,27 @@
 
         <div class="collapse navbar-collapse justify-content-end">
             <ul class="navbar-nav">
-
                 <li class="nav-item">
                     <a class="nav-link" href="/">Accueil</a>
                 </li>
 
-                {# Bloc visible si l'utilisateur est connecté #}
                 <li class="nav-item d-none" id="nav-user">
                     <span class="nav-link disabled text-white" id="nav-pseudo"></span>
-                    <a class="nav-link text-danger" href="#" onclick="logout()">Déconnexion</a>
+                    <a class="nav-link text-danger" href="#" id="logout-link">Déconnexion</a>
                 </li>
 
-                {# Bloc visible si l'utilisateur n'est PAS connecté #}
                 <li class="nav-item" id="nav-login">
                     <a class="nav-link" href="/login">Connexion</a>
                 </li>
-
             </ul>
         </div>
     </div>
 </nav>
 
+<script src="/js/main.js"></script>
 <script>
-    function logout() {
-        localStorage.removeItem('apiToken');
-        localStorage.removeItem('pseudo');
-        window.location.href = '/login';
-    }
-
     document.addEventListener('DOMContentLoaded', () => {
-        const token = localStorage.getItem('apiToken');
-        const pseudo = localStorage.getItem('pseudo');
-
-        const navLogin = document.getElementById('nav-login');
-        const navUser = document.getElementById('nav-user');
-        const navPseudo = document.getElementById('nav-pseudo');
-
-        if (token && pseudo) {
-            navLogin.classList.add('d-none');
-            navUser.classList.remove('d-none');
-            navPseudo.textContent = `Bonjour, ${pseudo}`;
-        } else {
-            navLogin.classList.remove('d-none');
-            navUser.classList.add('d-none');
-        }
+        updateHeader();
+        document.getElementById('logout-link')?.addEventListener('click', logout);
     });
 </script>
