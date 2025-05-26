@@ -8,7 +8,7 @@
 
     <!-- ✅ Zone affichée si déjà connecté -->
     <div id="connectedMessage" class="alert alert-success d-none text-center">
-        Bienvenue <span id="userEmail"></span> !
+        Bienvenue <span id="email"></span> !
         <button id="logoutBtn" class="btn btn-sm btn-danger ms-3">Se déconnecter</button>
     </div>
 
@@ -16,7 +16,7 @@
     <form id="loginForm" class="w-50 mx-auto">
         <div class="mb-3">
             <label for="email" class="form-label">Adresse email</label>
-            <input type="email" class="form-control" id="email" required>
+            <input type="email" class="form-control" id="email-form" required>
         </div>
         <div class="mb-3">
             <label for="password" class="form-label">Mot de passe</label>
@@ -33,11 +33,11 @@
 <script>
     // --- Affichage conditionnel si déjà connecté ---
     const token = localStorage.getItem('apiToken');
-    const email = localStorage.getItem('userEmail');
+    const email = localStorage.getItem('email');
 
     if (token && email) {
         document.getElementById('connectedMessage').classList.remove('d-none');
-        document.getElementById('userEmail').textContent = email;
+        document.getElementById('email').textContent = email;
         document.getElementById('loginForm').classList.add('d-none');
     }
 
@@ -60,7 +60,7 @@
         if (response.ok) {
             const data = await response.json();
             localStorage.setItem('apiToken', data.apiToken);
-            localStorage.setItem('userEmail', data.user);
+            localStorage.setItem('email', data.email);
             localStorage.setItem('pseudo', data.pseudo);
 
             window.location.href = '/'; 
@@ -74,7 +74,7 @@
     // --- Déconnexion ---
     document.getElementById('logoutBtn')?.addEventListener('click', function () {
         localStorage.removeItem('apiToken');
-        localStorage.removeItem('userEmail');
+        localStorage.removeItem('email');
         window.location.reload();
     });
 </script>

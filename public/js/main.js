@@ -43,7 +43,7 @@ function setupLoginForm() {
     form.addEventListener('submit', async function (e) {
         e.preventDefault();
 
-        const email = document.getElementById('email').value;
+        const email = document.getElementById('email-form').value;
         const password = document.getElementById('password').value;
 
         const response = await fetch('/api/login', {
