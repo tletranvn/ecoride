@@ -5,6 +5,14 @@
 {% block body %}
 <div class="container mt-5">
     <h2 class="text-center mb-4">Connexion</h2>
+
+    <!-- ✅ Zone affichée si déjà connecté -->
+    <div id="connectedMessage" class="alert alert-success d-none text-center">
+        Bienvenue <span id="userEmail"></span> !
+        <button id="logoutBtn" class="btn btn-sm btn-danger ms-3">Se déconnecter</button>
+    </div>
+
+    <!-- ✅ Formulaire de connexion -->
     <form id="loginForm" class="w-50 mx-auto">
         <div class="mb-3">
             <label for="email" class="form-label">Adresse email</label>
@@ -17,10 +25,23 @@
         <button type="submit" class="btn btn-primary w-100">Se connecter</button>
     </form>
 
+    <!-- ✅ Message de résultat -->
     <div id="loginResult" class="alert mt-3 d-none" role="alert"></div>
 </div>
 
+<!-- ✅ Script intelligent -->
 <script>
+    // --- Affichage conditionnel si déjà connecté ---
+    const token = localStorage.getItem('apiToken');
+    const email = localStorage.getItem('userEmail');
+
+    if (token && email) {
+        document.getElementById('connectedMessage').classList.remove('d-none');
+        document.getElementById('userEmail').textContent = email;
+        document.getElementById('loginForm').classList.add('d-none');
+    }
+
+    // --- Soumission du formulaire ---
     document.getElementById('loginForm').addEventListener('submit', async function (e) {
         e.preventDefault();
 
@@ -38,18 +59,23 @@
 
         if (response.ok) {
             const data = await response.json();
-
-            // ✅ stocker le token dans le stockage local (optionnel)
             localStorage.setItem('apiToken', data.apiToken);
+            localStorage.setItem('userEmail', data.user);
+            localStorage.setItem('pseudo', data.pseudo);
 
-            // ✅ rediriger vers la page d'accueil
-            window.location.href = '/';
+            window.location.href = '/'; 
         } else {
             resultDiv.classList.remove('alert-success');
             resultDiv.classList.add('alert-danger');
             resultDiv.textContent = 'Échec de la connexion. Vérifiez vos identifiants.';
         }
     });
-</script>
 
+    // --- Déconnexion ---
+    document.getElementById('logoutBtn')?.addEventListener('click', function () {
+        localStorage.removeItem('apiToken');
+        localStorage.removeItem('userEmail');
+        window.location.reload();
+    });
+</script>
 {% endblock %}
