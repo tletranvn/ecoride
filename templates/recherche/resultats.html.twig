@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Résultat de recherche - EcoRide{% endblock %}
+
+{% block body %}
+<div class="container mt-5 mb-5">
+    <h2 class="mb-4">Résultats de votre recherche</h2>
+
+    {% if villeDepart and villeArrivee %}
+        <p>Vous cherchez un trajet de <strong>{{ villeDepart }}</strong> vers <strong>{{ villeArrivee }}</strong>.</p>
+        <p><em>🔍 Les résultats réels seront affichés ici plus tard...</em></p>
+    {% else %}
+        <p class="text-danger">Veuillez saisir une ville de départ et d’arrivée.</p>
+    {% endif %}
+</div>
+{% endblock %}
