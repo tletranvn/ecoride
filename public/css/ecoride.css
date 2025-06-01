@@ -1,7 +1,8 @@
 /* Palette EcoRide */
 :root {
-    --ecoride-bg: #3A3530;
-    --ecoride-text: #FCFBF7;
+    --ecoride-bg: #FDF6EC;
+    --ecoride-dark: #244855;
+    --ecoride-text: #18160f;
     --ecoride-accent: #E07A5F;
     --ecoride-soft: #D8C3A5;
     --ecoride-neutral: #A8B8A0;
@@ -18,7 +19,7 @@ a {
 }
 
 .navbar, footer {
-    background-color: var(--ecoride-bg);
+    background-color: var(--ecoride-dark);
 }
 
 .btn-primary {
@@ -26,13 +27,8 @@ a {
     border: none;
 }
 
-.btn-outline-primary {
-    border-color: var(--ecoride-accent);
-    color: var(--ecoride-accent);
-}
-
-.btn-outline-primary:hover {
-    background-color: var(--ecoride-accent);
+.btn-primary:hover {
+    background-color: #198754 !important; /* Vert Bootstrap */
     color: white;
 }
 
