@@ -8,13 +8,13 @@
 
         <!-- ✅ Bandeau principal -->
         <div class="text-center mb-5">
-            <h1 class="display-4">Bienvenue sur <strong>EcoRide</strong> 🚗🌱</h1>
+            <h1 class="display-4">Bienvenue sur <strong>EcoRide</strong></h1>
             <p class="lead">Partagez vos trajets, réduisez vos émissions de CO₂, et roulez vers un avenir plus vert.</p>
         </div>
 
         <!-- ✅ Zone dynamique si connecté -->
         <div id="connected-home" class="alert alert-success d-none text-center">
-            Bonjour <span id="home-pseudo"></span> 👋<br>
+            Bonjour <span id="home-pseudo"></span> <br>
             <a href="/mes-trajets" class="btn btn-outline-success mt-3">Voir mes trajets</a>
         </div>
 
@@ -29,36 +29,6 @@
                     Chaque trajet partagé est un pas de plus vers une planète plus verte et une société plus solidaire.
                 </p>
             </div>
-            <h2 class="text-center mb-4">Pourquoi choisir EcoRide ?</h2>
-            <div class="row text-center">
-                <div class="col-md-4 mb-4">
-                    <h4>🌍 Écologique</h4>
-                    <p>En partageant vos trajets, vous réduisez les émissions de gaz à effet de serre et contribuez à un environnement plus sain.</p>
-                </div>
-                <div class="col-md-4 mb-4">
-                    <h4>💶 Économique</h4>
-                    <p>Grâce à un système de crédits, rouler devient plus équitable et avantageux pour tous les membres.</p>
-                </div>
-                <div class="col-md-4 mb-4">
-                    <h4>🤝 Communautaire</h4>
-                    <p>Rejoignez une communauté engagée, solidaire, et partagez vos trajets dans une ambiance conviviale et respectueuse.</p>
-                </div>
-            </div>
-            <!-- ✅ Formulaire de recherche d'itinéraire -->
-            <section class="mb-5">
-                <h2 class="text-center mb-4">Rechercher un itinéraire</h2>
-                <form action="/rechercher-trajet" method="GET" class="row g-3 justify-content-center">
-                    <div class="col-md-4">
-                        <input type="text" name="ville_depart" class="form-control" placeholder="Ville de départ" required>
-                    </div>
-                    <div class="col-md-4">
-                        <input type="text" name="ville_arrivee" class="form-control" placeholder="Ville d’arrivée" required>
-                    </div>
-                    <div class="col-md-2">
-                        <button type="submit" class="btn btn-success w-100">Rechercher</button>
-                    </div>
-                </form>
-            </section>         
         </section>
 
         <!-- ✅ Section images -->
@@ -85,6 +55,42 @@
                 <a href="/register" class="btn btn-outline-primary">Inscription</a>
             </div>
         </section>
+
+        <section class="mb-5">
+            <!-- ✅ Formulaire de recherche d'itinéraire -->
+            <section class="mb-5">
+                <h2 class="text-center mb-4">Rechercher un itinéraire</h2>
+                <form action="/rechercher-trajet" method="GET" class="row g-3 justify-content-center">
+                    <div class="col-md-4">
+                        <input type="text" name="ville_depart" class="form-control" placeholder="Ville de départ" required>
+                    </div>
+                    <div class="col-md-4">
+                        <input type="text" name="ville_arrivee" class="form-control" placeholder="Ville d’arrivée" required>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-success w-100">Rechercher</button>
+                    </div>
+                </form>
+            </section>   
+            <h2 class="text-center mb-4">Pourquoi choisir EcoRide ?</h2>
+            <div class="row text-center">
+                <div class="col-md-4 mb-4">
+                    <h4>🌍 Écologique</h4>
+                    <p>En partageant vos trajets, vous réduisez les émissions de gaz à effet de serre et contribuez à un environnement plus sain.</p>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <h4>💶 Économique</h4>
+                    <p>Grâce à un système de crédits, rouler devient plus équitable et avantageux pour tous les membres.</p>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <h4>🤝 Communautaire</h4>
+                    <p>Rejoignez une communauté engagée, solidaire, et partagez vos trajets dans une ambiance conviviale et respectueuse.</p>
+                </div>
+            </div>
+                  
+        </section>
+
+        
 
     </main>
 

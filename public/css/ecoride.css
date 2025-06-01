@@ -1,0 +1,47 @@
+/* Palette EcoRide */
+:root {
+    --ecoride-bg: #3A3530;
+    --ecoride-text: #FCFBF7;
+    --ecoride-accent: #E07A5F;
+    --ecoride-soft: #D8C3A5;
+    --ecoride-neutral: #A8B8A0;
+}
+
+body {
+    background-color: var(--ecoride-bg);
+    color: var(--ecoride-text);
+    font-family: 'Helvetica', sans-serif;
+}
+
+a {
+    color: var(--ecoride-accent);
+}
+
+.navbar, footer {
+    background-color: var(--ecoride-bg);
+}
+
+.btn-primary {
+    background-color: var(--ecoride-accent);
+    border: none;
+}
+
+.btn-outline-primary {
+    border-color: var(--ecoride-accent);
+    color: var(--ecoride-accent);
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--ecoride-accent);
+    color: white;
+}
+
+.card {
+    background-color: var(--ecoride-soft);
+    color: var(--ecoride-bg);
+}
+
+.alert-success {
+    background-color: var(--ecoride-neutral);
+    color: var(--ecoride-bg);
+}
