@@ -55,17 +55,35 @@
             <!-- ✅ Formulaire de recherche d'itinéraire -->
             <section class="mb-5">
                 <h2 class="text-center mb-4">Rechercher un itinéraire</h2>
-                <form action="/rechercher-trajet" method="GET" class="row g-3 justify-content-center">
-                    <div class="col-md-4">
-                        <input type="text" name="ville_depart" class="form-control" placeholder="Ville de départ" required>
+                <form action="{{ path('app_recherche_resultats') }}" method="GET" class="row g-3 justify-content-center">
+                    <div class="col-md-3">
+                        <input type="text" name="villeDepart" list="villes" class="form-control" placeholder="Ville de départ" required>
                     </div>
-                    <div class="col-md-4">
-                        <input type="text" name="ville_arrivee" class="form-control" placeholder="Ville d’arrivée" required>
+                    <div class="col-md-3">
+                        <input type="text" name="villeArrivee" list="villes" class="form-control" placeholder="Ville d’arrivée" required>
+                    </div>
+                    <div class="col-md-3">
+                        <input type="date" name="date" class="form-control" required>
                     </div>
                     <div class="col-md-2">
                         <button type="submit" class="btn btn-success w-100">Rechercher</button>
                     </div>
+
+                    <!-- Liste des villes suggérées -->
+                    <datalist id="villes">
+                        <option value="Paris">
+                        <option value="Lyon">
+                        <option value="Marseille">
+                        <option value="Toulouse">
+                        <option value="Nice">
+                        <option value="Nantes">
+                        <option value="Strasbourg">
+                        <option value="Montpellier">
+                        <option value="Bordeaux">
+                        <option value="Lille">
+                    </datalist>
                 </form>
+
             </section>   
             
             <!-- ✅ Zone pour visiteurs non connectés -->

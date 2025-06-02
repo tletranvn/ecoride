@@ -4,13 +4,51 @@
 
 {% block body %}
 <div class="container mt-5 mb-5">
-    <h2 class="mb-4">Résultats de votre recherche</h2>
+    <h2 class="mb-4 text-center">Résultats de votre recherche</h2>
 
     {% if villeDepart and villeArrivee %}
-        <p>Vous cherchez un trajet de <strong>{{ villeDepart }}</strong> vers <strong>{{ villeArrivee }}</strong>.</p>
-        <p><em>🔍 Les résultats réels seront affichés ici plus tard...</em></p>
+        <p class="text-center">
+            Vous cherchez un trajet de <strong>{{ villeDepart }}</strong> vers <strong>{{ villeArrivee }}</strong>.
+        </p>
+
+        {% if trajets|length > 0 %}
+            <div class="row">
+                {% for trajet in trajets %}
+                    <div class="col-md-6 mb-4">
+                        <div class="card shadow-sm">
+                            <div class="card-body d-flex align-items-center">
+                                <img src="{{ asset('uploads/users/' ~ (trajet.chauffeur.photo ?? 'default.jpg')) }}"
+                                     alt="Photo chauffeur"
+                                     width="80" height="80"
+                                     class="rounded-circle me-3"
+                                     style="object-fit: cover; border: 2px solid var(--ecoride-dark);">
+
+                                <div>
+                                    <h5 class="mb-1">{{ trajet.chauffeur.pseudo }}</h5>
+                                    <p class="mb-1">
+                                        🧍‍♂️ <strong>{{ trajet.placesRestantes }}</strong> places restantes<br>
+                                        💶 <strong>{{ trajet.prix }} €</strong><br>
+                                        📅 Départ : {{ trajet.dateDepart|date('d/m/Y H:i') }}<br>
+                                        {% if trajet.isEcoCertifie %}
+                                            🌱 <span class="text-success"><strong>Trajet écologique</strong></span><br>
+                                        {% endif %}
+                                    </p>
+                                    <a href="#" class="btn btn-outline-primary btn-sm mt-2">Détail</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="text-muted text-center mt-4">
+                Aucun trajet disponible pour ces critères.<br>
+                Essayez une autre date ou attendez que des trajets soient publiés.
+            </p>
+        {% endif %}
+
     {% else %}
-        <p class="text-danger">Veuillez saisir une ville de départ et d’arrivée.</p>
+        <p class="text-danger text-center">Veuillez saisir une ville de départ et d’arrivée.</p>
     {% endif %}
 </div>
 {% endblock %}

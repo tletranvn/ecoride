@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use App\Entity\Avis;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -55,11 +56,33 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255)]
     private ?string $apiToken = null;
 
+    /** ajouter un champ photo pour User*/
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $photo = null;
+
     /**
      * @var Collection<int, Vehicule>
      */
     #[ORM\OneToMany(mappedBy: 'utilisateur', targetEntity: Vehicule::class)]
     private Collection $vehicules;
+
+    /**
+     * @var Collection<int, Trajet>
+     */
+    #[ORM\OneToMany(targetEntity: Trajet::class, mappedBy: 'chauffeur')]
+    private Collection $trajets;
+
+    /**
+     * @var Collection<int, Avis>
+     */
+    #[ORM\OneToMany(targetEntity: Avis::class, mappedBy: 'auteur')]
+    private Collection $avisEcrits;
+
+    /**
+     * @var Collection<int, Avis>
+     */
+    #[ORM\OneToMany(targetEntity: Avis::class, mappedBy: 'cible')]
+    private Collection $avisRecus;
 
     /** @throws \Exception */
     public function __construct()
@@ -69,6 +92,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->credits = 20;
         $this->role = 'ROLE_USER';
         $this->vehicules = new ArrayCollection();
+        $this->trajets = new ArrayCollection();
+        $this->avisEcrits = new ArrayCollection();
+        $this->avisRecus = new ArrayCollection();
     }
 
     /**
@@ -261,4 +287,107 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     return $this;
     }
+
+    /**
+     * @return Collection<int, Trajet>
+     */
+    public function getTrajets(): Collection
+    {
+        return $this->trajets;
+    }
+
+    public function addTrajet(Trajet $trajet): static
+    {
+        if (!$this->trajets->contains($trajet)) {
+            $this->trajets->add($trajet);
+            $trajet->setChauffeur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTrajet(Trajet $trajet): static
+    {
+        if ($this->trajets->removeElement($trajet)) {
+            // set the owning side to null (unless already changed)
+            if ($trajet->getChauffeur() === $this) {
+                $trajet->setChauffeur(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Avis>
+     */
+    public function getAvisEcrits(): Collection
+    {
+        return $this->avisEcrits;
+    }
+
+    public function addAvisEcrit(Avis $avisEcrit): static
+    {
+        if (!$this->avisEcrits->contains($avisEcrit)) {
+            $this->avisEcrits->add($avisEcrit);
+            $avisEcrit->setAuteur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAvisEcrit(Avis $avisEcrit): static
+    {
+        if ($this->avisEcrits->removeElement($avisEcrit)) {
+            // set the owning side to null (unless already changed)
+            if ($avisEcrit->getAuteur() === $this) {
+                $avisEcrit->setAuteur(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Avis>
+     */
+    public function getAvisRecus(): Collection
+    {
+        return $this->avisRecus;
+    }
+
+    public function addAvisRecu(Avis $avisRecu): static
+    {
+        if (!$this->avisRecus->contains($avisRecu)) {
+            $this->avisRecus->add($avisRecu);
+            $avisRecu->setCible($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAvisRecu(Avis $avisRecu): static
+    {
+        if ($this->avisRecus->removeElement($avisRecu)) {
+            // set the owning side to null (unless already changed)
+            if ($avisRecu->getCible() === $this) {
+                $avisRecu->setCible(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getPhoto(): ?string
+    {
+        return $this->photo;
+    }
+
+    public function setPhoto(?string $photo): static
+    {
+        $this->photo = $photo;
+
+        return $this;
+    }
+
 }
