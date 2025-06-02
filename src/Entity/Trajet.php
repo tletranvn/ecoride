@@ -43,6 +43,10 @@ class Trajet
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $updatedAt = null;
 
+    //ajouter durée du trajet pour US4
+    #[ORM\Column(type: 'integer')]
+    private ?int $duree = null;
+
     #[ORM\ManyToOne(inversedBy: 'trajets')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $chauffeur = null;
@@ -229,5 +233,19 @@ class Trajet
 
         return $this;
     }
+    // pour l'US4 : ajouter la durée du trajet
+    /**
+     * Get the duration of the trip in minutes.
+     */
+    public function getDuree(): ?int
+    {
+        return $this->duree;
+    }
 
+    public function setDuree(int $duree): static
+    {
+        $this->duree = $duree;
+
+        return $this;
+    }
 }

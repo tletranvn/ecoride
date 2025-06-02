@@ -25,25 +25,56 @@ final class RechercheController extends AbstractController
         $villeArrivee = $request->query->get('villeArrivee');
         $date = $request->query->get('date');
 
+        // MODIF : récupération des filtres depuis le formulaire GET
+        $prixMax = $request->query->get('prixMax');
+        $noteMin = $request->query->get('noteMin');
+        $eco = $request->query->getBoolean('eco');
+        $dureeMax = $request->query->get('dureeMax');
+
+
         $trajets = [];
         $alternativeDate = null;
 
         if ($villeDepart && $villeArrivee && $date) {
             $dateObj = new \DateTimeImmutable($date);
 
-            // Recherche des trajets à la date exacte
-            $trajets = $trajetRepository->createQueryBuilder('t')
+            // MODIF : création du QueryBuilder
+            $qb = $trajetRepository->createQueryBuilder('t')
+                ->join('t.chauffeur', 'u') // pour pouvoir filtrer sur la note plus tard
                 ->andWhere('t.villeDepart = :depart')
                 ->andWhere('t.villeArrivee = :arrivee')
                 ->andWhere('t.dateDepart BETWEEN :start AND :end')
                 ->setParameter('depart', $villeDepart)
                 ->setParameter('arrivee', $villeArrivee)
                 ->setParameter('start', $dateObj->setTime(0, 0))
-                ->setParameter('end', $dateObj->setTime(23, 59, 59))
-                ->getQuery()
-                ->getResult();
+                ->setParameter('end', $dateObj->setTime(23, 59, 59));
 
-            // Si aucun trajet trouvé, proposer le plus proche
+            // MODIF : ajout du filtre écologique
+            if ($eco) {
+                $qb->andWhere('t.isEcoCertifie = true');
+            }
+
+            // MODIF : ajout du filtre sur le prix maximum
+            if ($prixMax !== null && is_numeric($prixMax)) {
+                $qb->andWhere('t.prix <= :prixMax')
+                   ->setParameter('prixMax', $prixMax);
+            }
+
+            // MODIF : ajout du filtre sur la note minimale du chauffeur
+            if ($noteMin !== null && is_numeric($noteMin)) {
+                $qb->andWhere('(SELECT AVG(a.note) FROM App\Entity\Avis a WHERE a.cible = u) >= :noteMin')
+                   ->setParameter('noteMin', $noteMin);
+            }
+
+            // MODIF : ajout du filtre sur la durée maximale du trajet
+            if ($dureeMax !== null && is_numeric($dureeMax)) {
+                $qb->andWhere('t.duree <= :dureeMax')
+                    ->setParameter('dureeMax', $dureeMax);
+            }
+
+            $trajets = $qb->getQuery()->getResult();        
+
+            // recherche du prochain trajet si aucun trouvé
             if (count($trajets) === 0) {
                 $alternative = $trajetRepository->createQueryBuilder('t')
                     ->andWhere('t.villeDepart = :depart')

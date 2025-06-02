@@ -28,6 +28,39 @@
                 Aucun trajet disponible à cette date. Essayez une autre date ou consultez les prochaines disponibilités.
             </div>
         {% else %}
+            <form method="get" action="{{ path('app_recherche_resultats') }}" class="mb-4 p-4 border rounded bg-light">
+                <input type="hidden" name="villeDepart" value="{{ villeDepart }}">
+                <input type="hidden" name="villeArrivee" value="{{ villeArrivee }}">
+                <input type="hidden" name="date" value="{{ date }}">
+
+                <div class="row g-3 align-items-end">
+                    <div class="col-md-3">
+                        <label for="prixMax" class="form-label">Prix maximum (€)</label>
+                        <input type="number" name="prixMax" id="prixMax" class="form-control" value="{{ app.request.get('prixMax') }}">
+                    </div>
+
+                    <div class="col-md-3">
+                        <label for="dureeMax" class="form-label">Durée maximale (min)</label>
+                        <input type="number" name="dureeMax" id="dureeMax" class="form-control" value="{{ app.request.get('dureeMax') }}">
+                    </div>
+
+                    <div class="col-md-2">
+                        <label for="noteMin" class="form-label">Note minimale</label>
+                        <input type="number" name="noteMin" id="noteMin" step="0.1" min="0" max="5" class="form-control" value="{{ app.request.get('noteMin') }}">
+                    </div>
+
+                    <div class="col-md-2 form-check pt-4">
+                        <input class="form-check-input" type="checkbox" name="eco" id="eco" {% if app.request.get('eco') %}checked{% endif %}>
+                        <label class="form-check-label" for="eco">
+                            🌱 Trajet écologique
+                        </label>
+                    </div>
+
+                    <div class="col-md-2 text-end">
+                        <button type="submit" class="btn btn-success w-100">Appliquer les filtres</button>
+                    </div>
+                </div>
+            </form>
             <div class="row row-cols-1 row-cols-md-2 g-4">
                 {% for trajet in trajets %}
                     <div class="col">
@@ -45,6 +78,8 @@
                                 <p><strong>Arrivée :</strong> {{ trajet.villeArrivee }} (heure estimée)</p>
                                 <p><strong>Places restantes :</strong> {{ trajet.placesRestantes }}/{{ trajet.placesTotal }}</p>
                                 <p><strong>Prix :</strong> {{ trajet.prix }} €</p>
+                                <p><strong>Durée :</strong> {{ trajet.duree }} min</p>
+
 
                                 {% if trajet.isEcoCertifie %}
                                     <span class="badge bg-success">Trajet écologique 🌱</span>
