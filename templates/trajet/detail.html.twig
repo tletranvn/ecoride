@@ -1,0 +1,70 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détail du covoiturage - EcoRide{% endblock %}
+
+{% block body %}
+<div class="container mt-5 mb-5">
+    <h2 class="mb-4 text-center">Détail du covoiturage</h2>
+
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-4">
+                        <img src="{{ trajet.chauffeur.photo ?? '/uploads/users/default.jpg' }}" alt="Photo" class="rounded-circle me-3" style="width: 70px; height: 70px; object-fit: cover;">
+                        <div>
+                            <h5 class="card-title mb-0">{{ trajet.chauffeur.pseudo }}</h5>
+                            <small>Note moyenne : ⭐️ 4.5 (exemple)</small>
+                        </div>
+                    </div>
+
+                    <p><strong>Départ :</strong> {{ trajet.villeDepart }} à {{ trajet.dateDepart|date('d/m/Y H:i') }}</p>
+                    <p><strong>Arrivée :</strong> {{ trajet.villeArrivee }}</p>
+                    <p><strong>Places restantes :</strong> {{ trajet.placesRestantes }}/{{ trajet.placesTotal }}</p>
+                    <p><strong>Prix :</strong> {{ trajet.prix }} €</p>
+                    <p><strong>Durée :</strong> {{ trajet.duree }} min</p>
+
+                    {% if trajet.isEcoCertifie %}
+                        <span class="badge bg-success mb-2">Trajet écologique 🌱</span>
+                    {% endif %}
+
+                    <hr>
+
+                    <h6>🚗 Véhicule</h6>
+                    <p><strong>Marque :</strong> {{ trajet.vehicule.marque }}</p>
+                    <p><strong>Modèle :</strong> {{ trajet.vehicule.modele }}</p>
+                    <p><strong>Énergie :</strong> {{ trajet.vehicule.typeEnergie }}</p>
+
+                    <h6 class="mt-4">🧭 Préférences du conducteur</h6>
+                    <p><strong>Fumeur :</strong> {{ trajet.vehicule.preferFumeur ? 'Oui' : 'Non' }}</p>
+                    <p><strong>Animaux :</strong> {{ trajet.vehicule.preferChien ? 'Oui' : 'Non' }}</p>
+
+                    <h6 class="mt-4">📝 Avis sur le chauffeur</h6>
+
+                        {% if trajet.chauffeur.avisRecus is empty %}
+                            <p class="text-muted">Aucun avis pour ce chauffeur pour le moment.</p>
+                        {% else %}
+                            <ul class="list-group">
+                                {% for avis in trajet.chauffeur.avisRecus %}
+                                    <li class="list-group-item">
+                                        <strong>{{ avis.auteur.pseudo }}</strong> — ⭐️ {{ avis.note }}/5<br>
+                                        <em>{{ avis.commentaire }}</em>
+                                        <div class="text-muted small">{{ avis.createdAt|date('d/m/Y') }}</div>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% endif %}
+
+                    <div class="mt-4 text-end">
+                        <a href="{{ path('app_recherche_resultats', { 
+                            villeDepart: villeDepart,
+                            villeArrivee: villeArrivee,
+                            date: date
+                        }) }}" class="btn btn-secondary">← Retour aux résultats</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

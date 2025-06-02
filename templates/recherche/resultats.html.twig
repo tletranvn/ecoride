@@ -6,7 +6,9 @@
 <div class="container mt-5 mb-5">
     <h2 class="mb-4 text-center">Résultats de votre recherche</h2>
 
-    {% if villeDepart and villeArrivee and date %}
+    {% if error is defined and error %}
+        <p class="text-danger text-center">Veuillez saisir une ville de départ, d’arrivée et une date.</p>
+    {% else %}
         <p class="text-center">
             🔎 Trajets de <strong>{{ villeDepart }}</strong> à <strong>{{ villeArrivee }}</strong>
             {% if alternativeDate is defined and alternativeDate %}
@@ -61,6 +63,7 @@
                     </div>
                 </div>
             </form>
+
             <div class="row row-cols-1 row-cols-md-2 g-4">
                 {% for trajet in trajets %}
                     <div class="col">
@@ -80,13 +83,17 @@
                                 <p><strong>Prix :</strong> {{ trajet.prix }} €</p>
                                 <p><strong>Durée :</strong> {{ trajet.duree }} min</p>
 
-
                                 {% if trajet.isEcoCertifie %}
                                     <span class="badge bg-success">Trajet écologique 🌱</span>
                                 {% endif %}
 
                                 <div class="mt-3 text-end">
-                                    <a href="#" class="btn btn-outline-primary btn-sm">Détail</a>
+                                    <a href="{{ path('trajet_detail', {
+                                        id: trajet.id,
+                                        villeDepart: villeDepart,
+                                        villeArrivee: villeArrivee,
+                                        date: date|date('Y-m-d')
+                                    }) }}" class="btn btn-outline-primary btn-sm">Détail</a>
                                 </div>
                             </div>
                         </div>
@@ -94,8 +101,6 @@
                 {% endfor %}
             </div>
         {% endif %}
-    {% else %}
-        <p class="text-danger text-center">Veuillez saisir une ville de départ, d’arrivée et une date.</p>
     {% endif %}
 </div>
 {% endblock %}

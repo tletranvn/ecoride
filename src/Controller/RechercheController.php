@@ -35,6 +35,13 @@ final class RechercheController extends AbstractController
         $trajets = [];
         $alternativeDate = null;
 
+        // MODIF : gestion des cas où les champs sont vides
+        if (!$villeDepart || !$villeArrivee || !$date) {
+            return $this->render('recherche/resultats.html.twig', [
+            'error' => true,
+            ]);
+        }
+
         if ($villeDepart && $villeArrivee && $date) {
             $dateObj = new \DateTimeImmutable($date);
 
@@ -101,6 +108,7 @@ final class RechercheController extends AbstractController
             'date' => $date,
             'trajets' => $trajets,
             'alternativeDate' => $alternativeDate,
+            'error' => false,
         ]);
     }
 }
