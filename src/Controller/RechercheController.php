@@ -26,10 +26,12 @@ final class RechercheController extends AbstractController
         $date = $request->query->get('date');
 
         $trajets = [];
+        $alternativeDate = null;
 
         if ($villeDepart && $villeArrivee && $date) {
             $dateObj = new \DateTimeImmutable($date);
 
+            // Recherche des trajets à la date exacte
             $trajets = $trajetRepository->createQueryBuilder('t')
                 ->andWhere('t.villeDepart = :depart')
                 ->andWhere('t.villeArrivee = :arrivee')
@@ -40,6 +42,26 @@ final class RechercheController extends AbstractController
                 ->setParameter('end', $dateObj->setTime(23, 59, 59))
                 ->getQuery()
                 ->getResult();
+
+            // Si aucun trajet trouvé, proposer le plus proche
+            if (count($trajets) === 0) {
+                $alternative = $trajetRepository->createQueryBuilder('t')
+                    ->andWhere('t.villeDepart = :depart')
+                    ->andWhere('t.villeArrivee = :arrivee')
+                    ->andWhere('t.dateDepart > :date')
+                    ->orderBy('t.dateDepart', 'ASC')
+                    ->setMaxResults(1)
+                    ->setParameter('depart', $villeDepart)
+                    ->setParameter('arrivee', $villeArrivee)
+                    ->setParameter('date', $dateObj)
+                    ->getQuery()
+                    ->getOneOrNullResult();
+
+                if ($alternative) {
+                    $alternativeDate = $alternative->getDateDepart();
+                    $trajets = [$alternative];
+                }
+            }
         }
 
         return $this->render('recherche/resultats.html.twig', [
@@ -47,6 +69,7 @@ final class RechercheController extends AbstractController
             'villeArrivee' => $villeArrivee,
             'date' => $date,
             'trajets' => $trajets,
+            'alternativeDate' => $alternativeDate,
         ]);
     }
 }

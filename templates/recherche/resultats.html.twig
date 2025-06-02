@@ -1,54 +1,66 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Résultat de recherche - EcoRide{% endblock %}
+{% block title %}Résultats de recherche - EcoRide{% endblock %}
 
 {% block body %}
 <div class="container mt-5 mb-5">
     <h2 class="mb-4 text-center">Résultats de votre recherche</h2>
 
-    {% if villeDepart and villeArrivee %}
+    {% if villeDepart and villeArrivee and date %}
         <p class="text-center">
-            Vous cherchez un trajet de <strong>{{ villeDepart }}</strong> vers <strong>{{ villeArrivee }}</strong>.
+            🔎 Trajets de <strong>{{ villeDepart }}</strong> à <strong>{{ villeArrivee }}</strong>
+            {% if alternativeDate is defined and alternativeDate %}
+                <br><span class="text-muted small">
+                    Aucun trajet trouvé le {{ date|date('d/m/Y') }}, mais un trajet est disponible le <strong>{{ alternativeDate|date('d/m/Y') }}</strong>.
+                    <a href="{{ path('app_recherche_resultats', {
+                        villeDepart: villeDepart,
+                        villeArrivee: villeArrivee,
+                        date: alternativeDate|date('Y-m-d')
+                    }) }}" class="btn btn-sm btn-outline-primary ms-2">Rechercher à cette date</a>
+                </span>
+            {% else %}
+                le <strong>{{ date|date('d/m/Y') }}</strong>
+            {% endif %}
         </p>
 
-        {% if trajets|length > 0 %}
-            <div class="row">
+        {% if trajets is empty %}
+            <div class="alert alert-warning text-center">
+                Aucun trajet disponible à cette date. Essayez une autre date ou consultez les prochaines disponibilités.
+            </div>
+        {% else %}
+            <div class="row row-cols-1 row-cols-md-2 g-4">
                 {% for trajet in trajets %}
-                    <div class="col-md-6 mb-4">
+                    <div class="col">
                         <div class="card shadow-sm">
-                            <div class="card-body d-flex align-items-center">
-                                <img src="{{ asset('uploads/users/' ~ (trajet.chauffeur.photo ?? 'default.jpg')) }}"
-                                     alt="Photo chauffeur"
-                                     width="80" height="80"
-                                     class="rounded-circle me-3"
-                                     style="object-fit: cover; border: 2px solid var(--ecoride-dark);">
+                            <div class="card-body">
+                                <div class="d-flex align-items-center mb-3">
+                                    <img src="{{ trajet.chauffeur.photo ?? '/uploads/users/default.jpg' }}" alt="Photo" class="rounded-circle me-3" style="width: 60px; height: 60px; object-fit: cover;">
+                                    <div>
+                                        <h5 class="card-title mb-0">{{ trajet.chauffeur.pseudo }}</h5>
+                                        <small>Note moyenne : ⭐️ 4.5 (exemple)</small>
+                                    </div>
+                                </div>
 
-                                <div>
-                                    <h5 class="mb-1">{{ trajet.chauffeur.pseudo }}</h5>
-                                    <p class="mb-1">
-                                        🧍‍♂️ <strong>{{ trajet.placesRestantes }}</strong> places restantes<br>
-                                        💶 <strong>{{ trajet.prix }} €</strong><br>
-                                        📅 Départ : {{ trajet.dateDepart|date('d/m/Y H:i') }}<br>
-                                        {% if trajet.isEcoCertifie %}
-                                            🌱 <span class="text-success"><strong>Trajet écologique</strong></span><br>
-                                        {% endif %}
-                                    </p>
-                                    <a href="#" class="btn btn-outline-primary btn-sm mt-2">Détail</a>
+                                <p><strong>Départ :</strong> {{ trajet.villeDepart }} à {{ trajet.dateDepart|date('H:i') }}</p>
+                                <p><strong>Arrivée :</strong> {{ trajet.villeArrivee }} (heure estimée)</p>
+                                <p><strong>Places restantes :</strong> {{ trajet.placesRestantes }}/{{ trajet.placesTotal }}</p>
+                                <p><strong>Prix :</strong> {{ trajet.prix }} €</p>
+
+                                {% if trajet.isEcoCertifie %}
+                                    <span class="badge bg-success">Trajet écologique 🌱</span>
+                                {% endif %}
+
+                                <div class="mt-3 text-end">
+                                    <a href="#" class="btn btn-outline-primary btn-sm">Détail</a>
                                 </div>
                             </div>
                         </div>
                     </div>
                 {% endfor %}
             </div>
-        {% else %}
-            <p class="text-muted text-center mt-4">
-                Aucun trajet disponible pour ces critères.<br>
-                Essayez une autre date ou attendez que des trajets soient publiés.
-            </p>
         {% endif %}
-
     {% else %}
-        <p class="text-danger text-center">Veuillez saisir une ville de départ et d’arrivée.</p>
+        <p class="text-danger text-center">Veuillez saisir une ville de départ, d’arrivée et une date.</p>
     {% endif %}
 </div>
 {% endblock %}
