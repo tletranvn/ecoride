@@ -20,7 +20,7 @@ class TrajetFixtures extends Fixture
                   ->setPassword('hashedpassword') 
                   ->setPseudo('EcoChauffeur')
                   ->setCredits(20)
-                  ->setRole('ROLE_USER')
+                  ->setRoles(['ROLE_USER'])
                   ->setCreatedAt(new \DateTimeImmutable())
                   ->setApiToken(bin2hex(random_bytes(20)));
 

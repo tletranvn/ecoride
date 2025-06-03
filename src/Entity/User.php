@@ -8,12 +8,14 @@ use App\Entity\Participation;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
+#[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -42,8 +44,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?int $credits = null;
 
-    #[ORM\Column(length: 50)]
-    private ?string $role = null;
+    /*#[ORM\Column(length: 50)]
+    private ?string $role = null;*/
 
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
@@ -97,7 +99,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->apiToken = bin2hex(random_bytes(20));
         $this->createdAt = new \DateTimeImmutable();
         $this->credits = 20;
-        $this->role = 'ROLE_USER';
+        $this->roles = ['ROLE_USER']; /*format JSON défini par Symfony quand make:user*/ 
         $this->vehicules = new ArrayCollection();
         $this->trajets = new ArrayCollection();
         $this->avisEcrits = new ArrayCollection();
@@ -143,8 +145,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getRoles(): array
     {
         $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
 
         return array_unique($roles);
     }
@@ -207,7 +207,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getRole(): ?string
+    /*public function getRole(): ?string
     {
         return $this->role;
     }
@@ -217,7 +217,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->role = $role;
 
         return $this;
-    }
+    }*/
 
     public function getCreatedAt(): ?\DateTimeImmutable
     {

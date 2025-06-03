@@ -1,0 +1,68 @@
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Inscription - EcoRide{% endblock %}
+
+{% block body %}
+<div class="container mt-5 mb-5">
+    {% if app.user %}
+        <div class="alert alert-info text-center">
+            Vous êtes déjà connecté en tant que {{ app.user.pseudo }},
+            <a href="{{ path('app_logout') }}">Déconnexion</a>
+        </div>
+    {% endif %}
+
+    <h2 class="text-center mb-4">Créer un compte</h2>
+
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-4">
+            {{ form_start(registrationForm) }}
+
+            <div class="mb-3">
+                {{ form_label(registrationForm.pseudo) }}
+                {{ form_widget(registrationForm.pseudo, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(registrationForm.pseudo) }}
+            </div>
+
+            <div class="mb-3">
+                {{ form_label(registrationForm.email) }}
+                {{ form_widget(registrationForm.email, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(registrationForm.email) }}
+            </div>
+
+            <div class="mb-3">
+                {{ form_label(registrationForm.plainPassword) }}
+                {{ form_widget(registrationForm.plainPassword, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(registrationForm.plainPassword) }}
+            </div>
+
+            <div class="text-center mt-4 mb-3">
+                <button type="submit" class="btn btn-ecoride btn-ecoride-primary px-4 py-2">
+                    S'inscrire
+                </button>
+            </div>
+
+            {#agreeTerms est défini dans RegistrationForm.php généré automatiquement par Symfony#}
+            <div class="form-check mb-4">
+                {{ form_widget(registrationForm.agreeTerms, { 
+                    'attr': {
+                        'class': 'form-check-input',
+                        'id': 'agreeTerms'
+                    }
+                }) }}
+                <label class="form-check-label" for="agreeTerms" style="font-size: 1.1rem;">
+                    J’accepte les <a href="{{ path('app_mentions') }}" target="_blank">mentions légales</a>
+                </label>
+                {{ form_errors(registrationForm.agreeTerms) }}
+            </div>
+
+            {{ form_end(registrationForm) }}
+
+
+            <p class="text-center mt-3">
+                Déjà inscrit ? <a href="{{ path('app_login') }}">Se connecter</a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

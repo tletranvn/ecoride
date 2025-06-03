@@ -7,6 +7,7 @@ security:
     # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
     providers:
         # used to reload user from session & other features (e.g. switch_user)
+        # charger les utilisateurs via leur email depuis l’entité User
         app_user_provider:
             entity:
                 class: App\Entity\User
@@ -18,6 +19,7 @@ security:
         main:
             lazy: true
             provider: app_user_provider
+            # génère automatiquement quand on utilise make:security:form-login
             form_login:
                 login_path: app_login
                 check_path: app_login
