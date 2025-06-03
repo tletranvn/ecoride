@@ -7,49 +7,50 @@ use App\Entity\User;
 use App\Entity\Vehicule;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class TrajetFixtures extends Fixture
 {
+    public function __construct(private UserPasswordHasherInterface $hasher) {}
+
     public function load(ObjectManager $manager): void
     {
-        
-        // créer un chauffeur fictif 
-
+        // Créer un utilisateur fictif (chauffeur)
         $chauffeur = new User();
-        $chauffeur->setEmail('test@example.com')
-                  ->setPassword('hashedpassword') 
-                  ->setPseudo('EcoChauffeur')
-                  ->setCredits(20)
-                  ->setRoles(['ROLE_USER'])
-                  ->setCreatedAt(new \DateTimeImmutable())
-                  ->setApiToken(bin2hex(random_bytes(20)));
+        $chauffeur->setEmail('chauffeur@fixture.com');
+        $chauffeur->setPseudo('ChauffeurFixture');
+        $chauffeur->setPassword($this->hasher->hashPassword($chauffeur, 'motdepasse'));
+        $chauffeur->setCredits(100);
+        $chauffeur->setRoles(['ROLE_USER']);
 
+        // Créer un véhicule associé au chauffeur
         $vehicule = new Vehicule();
-        $vehicule->setMarque('Renault')
-                 ->setModele('ZOE')
-                 ->setImmatriculation('AB-123-CD')
-                 ->setTypeEnergie('électrique')
-                 ->setPreferChien(true)
-                 ->setPreferFumeur(false)
-                 ->setCreatedAt(new \DateTimeImmutable())
-                 ->setUtilisateur($chauffeur);
+        $vehicule->setMarque('Renault');
+        $vehicule->setModele('Zoé');
+        $vehicule->setImmatriculation('AA-000-AA');
+        $vehicule->setTypeEnergie('électrique');
+        $vehicule->setPreferFumeur(false);
+        $vehicule->setPreferChien(true);
+        $vehicule->setCreatedAt(new \DateTimeImmutable());
+        $vehicule->setUtilisateur($chauffeur);
 
         $manager->persist($chauffeur);
         $manager->persist($vehicule);
 
-        for ($i = 0; $i < 5; $i++) {
+        // Générer 5 trajets de démonstration
+        for ($i = 1; $i <= 5; $i++) {
             $trajet = new Trajet();
-            $trajet->setVilleDepart('Paris')
-                   ->setVilleArrivee('Lyon')
-                   ->setDateDepart(new \DateTimeImmutable('+'.($i + 1).' days'))
-                   ->setPlacesTotal(4)
-                   ->setPlacesRestantes(2)
-                   ->setPrix(25.50 + $i)
-                   ->setIsEcoCertifie(true)
-                   ->setCreatedAt(new \DateTimeImmutable())
-                   ->setDuree(120 + $i * 10)
-                   ->setChauffeur($chauffeur)
-                   ->setVehicule($vehicule);
+            $trajet->setVilleDepart('Paris');
+            $trajet->setVilleArrivee('Lyon');
+            $trajet->setDateDepart(new \DateTimeImmutable("+$i days"));
+            $trajet->setPlacesTotal(4);
+            $trajet->setPlacesRestantes(2);
+            $trajet->setPrix(20 + $i); // entre 21 et 25
+            $trajet->setIsEcoCertifie(true);
+            $trajet->setDuree(100 + $i * 10);
+            $trajet->setCreatedAt(new \DateTimeImmutable());
+            $trajet->setChauffeur($chauffeur);
+            $trajet->setVehicule($vehicule);
 
             $manager->persist($trajet);
         }
