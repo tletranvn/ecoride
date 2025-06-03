@@ -39,6 +39,14 @@ class Vehicule
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $updatedAt = null;
 
+    /** Ajouter 2 champs manquants pour US8 */
+    #[ORM\Column(type: 'integer')]
+    private ?int $places = null;
+
+    #[ORM\Column(type: 'text', nullable: true)]
+    private ?string $preferencesLibres = null;
+
+
     #[ORM\ManyToOne(inversedBy: 'vehicules')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $utilisateur = null;
@@ -196,4 +204,28 @@ class Vehicule
 
         return $this;
     }
+
+    //ajouter pour US8 les 2 champs manquants dans Vehicule
+    public function getPlaces(): ?int
+    {
+        return $this->places;
+    }
+
+    public function setPlaces(int $places): static
+    {
+        $this->places = $places;
+        return $this;
+    }
+
+    public function getPreferencesLibres(): ?string
+    {
+        return $this->preferencesLibres;
+    }
+
+    public function setPreferencesLibres(?string $preferencesLibres): static
+    {
+        $this->preferencesLibres = $preferencesLibres;
+        return $this;
+    }
+
 }

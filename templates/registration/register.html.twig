@@ -1,4 +1,3 @@
-
 {% extends 'base.html.twig' %}
 
 {% block title %}Inscription - EcoRide{% endblock %}
@@ -36,12 +35,6 @@
                 {{ form_errors(registrationForm.plainPassword) }}
             </div>
 
-            <div class="text-center mt-4 mb-3">
-                <button type="submit" class="btn btn-ecoride btn-ecoride-primary px-4 py-2">
-                    S'inscrire
-                </button>
-            </div>
-
             {#agreeTerms est défini dans RegistrationForm.php généré automatiquement par Symfony#}
             <div class="form-check mb-4">
                 {{ form_widget(registrationForm.agreeTerms, { 
@@ -56,8 +49,30 @@
                 {{ form_errors(registrationForm.agreeTerms) }}
             </div>
 
-            {{ form_end(registrationForm) }}
+            <div class="mb-3">
+                {{ form_label(registrationForm.userType) }}
+                <div class="form-check">
+                    {{ form_widget(registrationForm.userType.0, {'attr': {'class': 'form-check-input', 'id': 'type_passager'}}) }}
+                    <label class="form-check-label" for="type_passager">Passager</label>
+                </div>
+                <div class="form-check">
+                    {{ form_widget(registrationForm.userType.1, {'attr': {'class': 'form-check-input', 'id': 'type_chauffeur'}}) }}
+                    <label class="form-check-label" for="type_chauffeur">Chauffeur</label>
+                </div>
+                <div class="form-check">
+                    {{ form_widget(registrationForm.userType.2, {'attr': {'class': 'form-check-input', 'id': 'type_mixte'}}) }}
+                    <label class="form-check-label" for="type_mixte">Passager + Chauffeur</label>
+                </div>
+                {{ form_errors(registrationForm.userType) }}
+            </div>
 
+            <div class="text-center mt-4 mb-3">
+                <button type="submit" class="btn btn-ecoride btn-ecoride-primary px-4 py-2">
+                    S'inscrire
+                </button>
+            </div>
+
+            {{ form_end(registrationForm) }}
 
             <p class="text-center mt-3">
                 Déjà inscrit ? <a href="{{ path('app_login') }}">Se connecter</a>
@@ -66,3 +81,4 @@
     </div>
 </div>
 {% endblock %}
+      

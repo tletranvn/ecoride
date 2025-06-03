@@ -63,6 +63,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $photo = null;
 
+    /** ajouter userType pour passager/chauffeur ou les2 */
+    #[ORM\Column(length: 50, nullable: true)]
+    private ?string $userType = null;
+
     /**
      * @var Collection<int, Vehicule>
      */
@@ -427,5 +431,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+    public function getUserType(): ?string
+    {
+        return $this->userType;
+    }
+
+    public function setUserType(?string $userType): self
+    {
+        $this->userType = $userType;
+        return $this;
+    }
+
 
 }

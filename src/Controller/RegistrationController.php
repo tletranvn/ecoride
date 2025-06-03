@@ -37,9 +37,18 @@ class RegistrationController extends AbstractController
             $entityManager->persist($user);
             $entityManager->flush();
 
-            // do anything else you need here, like send an email
+            // Connecter l'utilisateur après l'enregistrement jusqu'à US7
+            //return $security->login($user, 'form_login', 'main');
 
-            return $security->login($user, 'form_login', 'main');
+            //ajouter la condition de redirection selon userType pour US8
+            $response = $security->login($user, 'form_login', 'main');
+
+            if (in_array($user->getUserType(), ['chauffeur', 'passager_chauffeur'])) {
+                return $this->redirectToRoute('app_vehicule_new'); // Rediriger vers la page de création de véhicule si le userType est chauffeur ou passager_chauffeur
+            }
+
+            return $response;
+
         }
 
         return $this->render('registration/register.html.twig', [

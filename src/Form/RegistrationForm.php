@@ -12,6 +12,8 @@ use Symfony\Component\Validator\Constraints\IsTrue;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+
 
 
 class RegistrationForm extends AbstractType
@@ -52,6 +54,20 @@ class RegistrationForm extends AbstractType
                     ]),
                 ],
             ])
+            
+            //ajouter userType pour US8 passager, chauffeur, passager_chauffeur
+            ->add('userType', ChoiceType::class, [
+                'label' => 'Quel type d’utilisateur êtes-vous ?',
+                'choices' => [
+                    'Passager' => 'passager',
+                    'Chauffeur' => 'chauffeur',
+                    'Passager + Chauffeur' => 'passager_chauffeur',
+                ],
+                'expanded' => true, // affichage en boutons radio
+                'multiple' => false,
+                'required' => true,
+            ])
+
         ;
     }
 
