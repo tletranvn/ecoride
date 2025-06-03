@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes trajets - EcoRide{% endblock %}
+
+{% block body %}
+<div class="container mt-5 mb-5">
+
+    <div class="text-end mb-4">
+        <span class="badge bg-success fs-5">
+            💳 Crédits restants : <strong>{{ credits|number_format(2, '.', ' ') }}</strong>
+        </span>
+    </div>
+
+    <h2 class="text-center mb-4">Mes trajets réservés</h2>
+
+    {% if participations is empty %}
+        <div class="alert alert-info text-center">
+            Vous n’avez encore réservé aucun trajet.
+        </div>
+    {% else %}
+        <div class="row row-cols-1 row-cols-md-2 g-4">
+            {% for participation in participations %}
+                {% set trajet = participation.trajet %}
+                <div class="col">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ trajet.villeDepart }} → {{ trajet.villeArrivee }}</h5>
+                            <p><strong>Date :</strong> {{ trajet.dateDepart|date('d/m/Y H:i') }}</p>
+                            <p><strong>Durée :</strong> {{ trajet.duree }} min</p>
+                            <p><strong>Prix payé :</strong> {{ trajet.prix }} crédits</p>
+                            <p><strong>Chauffeur :</strong> {{ trajet.chauffeur.pseudo }}</p>
+                            <a href="{{ path('trajet_detail', { id: trajet.id }) }}" class="btn btn-outline-primary btn-sm">Voir le détail</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,4 +1,4 @@
-
+/* ne pas utiliser quand on utiliser Formulaire Symfony pour la connexion
 
 function logout() {
     localStorage.removeItem('apiToken');
@@ -23,8 +23,10 @@ function updateHeader() {
         navLogin?.classList.remove('d-none');
         navUser?.classList.add('d-none');
     }
-}
+} 
+*/
 
+/* ne pas utiliser cette function quand on utilise le système Api/JS pour la connexion
 function checkIfAlreadyLoggedIn() {
     const token = localStorage.getItem('apiToken');
     const email = localStorage.getItem('email');
@@ -34,7 +36,25 @@ function checkIfAlreadyLoggedIn() {
         document.getElementById('email').textContent = email;
         document.getElementById('loginForm')?.classList.add('d-none');
     }
+}*/
+
+/* ne pas utiliser quand on utiliser Formulaire Symfony pour la connexion
+function checkIfAlreadyLoggedIn() {
+    const token = localStorage.getItem('apiToken');
+    const email = localStorage.getItem('email');
+
+    if (token && email) {
+        document.getElementById('connectedMessage')?.classList.remove('d-none');
+        
+        const emailElement = document.getElementById('email');
+        if (emailElement) {
+            emailElement.textContent = email;
+        }
+
+        document.getElementById('loginForm')?.classList.add('d-none');
+    }
 }
+
 
 function setupLoginForm() {
     const form = document.getElementById('loginForm');
@@ -76,3 +96,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.getElementById('logout-link')?.addEventListener('click', logout);
 });
+*/

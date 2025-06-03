@@ -15,7 +15,7 @@ use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use OpenApi\Annotations as OA;
 
 #[Route('/api', name: 'app_api_')]
-class SecurityController extends AbstractController
+class SecurityControllerApi extends AbstractController
 {
     public function __construct(
         private SerializerInterface $serializer, // Inject any required services here

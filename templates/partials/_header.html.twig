@@ -20,25 +20,27 @@
                     <a class="nav-link" href="/contact">Contact</a>
                 </li>
 
-                <!-- Visible si connecté -->
-                <li class="nav-item d-none" id="nav-user">
-                    <span class="nav-link disabled text-white" id="nav-pseudo"></span>
-                    <a class="nav-link text-danger" href="#" id="logout-link">Déconnexion</a>
-                </li>
-
-                <!-- Visible si non connecté -->
-                <li class="nav-item" id="nav-login">
-                    <a class="nav-link" href="/login">Connexion</a>
-                </li>
+                {% if app.user %}
+                    <!-- Visible si connecté -->
+                    <li class="nav-item">
+                        <span class="nav-link text-white">Bonjour, {{ app.user.pseudo }}</span>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-danger" href="{{ path('app_logout') }}">Déconnexion</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('trajet_mes_trajets') }}">Mes trajets</a>
+                    </li>
+                {% else %}
+                    <!-- Visible si non connecté -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('app_login') }}">Connexion</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('app_register') }}">Créer un compte</a>
+                    </li>
+                {% endif %}
             </ul>
         </div>
     </div>
 </nav>
-
-<script src="/js/main.js"></script>
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        updateHeader();
-        document.getElementById('logout-link')?.addEventListener('click', logout);
-    });
-</script>

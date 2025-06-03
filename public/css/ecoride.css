@@ -32,6 +32,35 @@ a {
     color: white;
 }
 
+.btn-ecoride {
+    font-size: 1.1rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 500;
+}
+
+.btn-ecoride-primary {
+    background-color: var(--ecoride-accent);
+    color: white;
+    border: none;
+}
+
+.btn-ecoride-secondary {
+    background-color: white;
+    border: 1px solid var(--ecoride-accent);
+    color: var(--ecoride-accent);
+}
+
+.btn-ecoride-primary:hover {
+    background-color: var(--ecoride-soft);
+    color: white;
+}
+
+.btn-ecoride-secondary:hover {
+    background-color: var(--ecoride-soft);
+    color: white;
+}
+
 .card {
     background-color: var(--ecoride-neutral);
     color: var(--ecoride-bg);

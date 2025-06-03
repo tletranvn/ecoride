@@ -6,21 +6,22 @@
 <div class="d-flex flex-column min-vh-100">
     <main class="container flex-grow-1 mt-5">
 
-        <!-- ✅ Bandeau principal -->
+        <!-- Bandeau principal -->
         <div class="text-center mb-5">
             <h1 class="display-4">Bienvenue sur <strong>EcoRide</strong></h1>
             <p class="lead">Partagez vos trajets, réduisez vos émissions de CO₂, et roulez vers un avenir plus vert.</p>
         </div>
 
-        <!-- ✅ Zone dynamique si connecté -->
-        <div id="connected-home" class="alert alert-success d-none text-center">
-            Bonjour <span id="home-pseudo"></span> <br>
-            <a href="/mes-trajets" class="btn btn-outline-success mt-3">Voir mes trajets</a>
-        </div>
+        {% if app.user %}
+            <!-- Zone dynamique si connecté -->
+            <div class="alert alert-success text-center">
+                Bonjour {{ app.user.pseudo }} !<br>
+                <a href="{{ path('trajet_mes_trajets') }}" class="btn btn-outline-success mt-3">Voir mes trajets</a>
+            </div>
+        {% endif %}
 
-        <!-- ✅ Présentation EcoRide -->
+        <!-- Présentation EcoRide -->
         <section class="mb-5">
-            <!-- ✅ Présentation de l'entreprise -->
             <div class="text-center mb-5">
                 <p class="fs-5">
                     <strong>EcoRide</strong> est une plateforme de covoiturage éco-responsable fondée en 2025, 
@@ -31,7 +32,7 @@
             </div>
         </section>
 
-        <!-- ✅ Section images -->
+        <!-- Section images -->
         <section class="mb-5">
             <h2 class="text-center mb-4">Notre vision en images</h2>
             <div class="row text-center">
@@ -48,79 +49,53 @@
                     <p class="mt-2">Une action concrète pour la planète</p>
                 </div>
             </div>
-            
         </section>
 
+        <!-- Formulaire de recherche -->
         <section class="mb-5">
-            <!-- ✅ Formulaire de recherche d'itinéraire -->
-            <section class="mb-5">
-                <h2 class="text-center mb-4">Rechercher un itinéraire</h2>
-                <form action="{{ path('app_recherche_resultats') }}" method="GET" class="row g-3 justify-content-center">
-                    <div class="col-md-3">
-                        <input type="text" name="villeDepart" list="villes" class="form-control" placeholder="Ville de départ" required>
-                    </div>
-                    <div class="col-md-3">
-                        <input type="text" name="villeArrivee" list="villes" class="form-control" placeholder="Ville d’arrivée" required>
-                    </div>
-                    <div class="col-md-3">
-                        <input type="date" name="date" class="form-control" required>
-                    </div>
-                    <div class="col-md-2">
-                        <input type="number" name="dureeMax" class="form-control" placeholder="Durée max (min)">
-                    </div>
-                    <div class="col-md-2">
-                        <button type="submit" class="btn btn-success w-100">Rechercher</button>
-                    </div>
+            <h2 class="text-center mb-4">Rechercher un itinéraire</h2>
+            <form action="{{ path('app_recherche_resultats') }}" method="GET" class="row g-3 justify-content-center">
+                <div class="col-md-3">
+                    <input type="text" name="villeDepart" list="villes" class="form-control" placeholder="Ville de départ" required>
+                </div>
+                <div class="col-md-3">
+                    <input type="text" name="villeArrivee" list="villes" class="form-control" placeholder="Ville d’arrivée" required>
+                </div>
+                <div class="col-md-3">
+                    <input type="date" name="date" class="form-control" required>
+                </div>
+                <div class="col-md-2">
+                    <input type="number" name="dureeMax" class="form-control" placeholder="Durée max (min)">
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-success w-100">Rechercher</button>
+                </div>
 
-                    <!-- Liste des villes suggérées -->
-                    <datalist id="villes">
-                        <option value="Paris">
-                        <option value="Lyon">
-                        <option value="Marseille">
-                        <option value="Toulouse">
-                        <option value="Nice">
-                        <option value="Nantes">
-                        <option value="Strasbourg">
-                        <option value="Montpellier">
-                        <option value="Bordeaux">
-                        <option value="Lille">
-                    </datalist>
-                </form>
+                <!-- Liste des villes suggérées -->
+                <datalist id="villes">
+                    <option value="Paris">
+                    <option value="Lyon">
+                    <option value="Marseille">
+                    <option value="Toulouse">
+                    <option value="Nice">
+                    <option value="Nantes">
+                    <option value="Strasbourg">
+                    <option value="Montpellier">
+                    <option value="Bordeaux">
+                    <option value="Lille">
+                </datalist>
+            </form>
+        </section>   
 
-            </section>   
-            
-            <!-- ✅ Zone pour visiteurs non connectés -->
-            <div id="guest-home" class="text-center mb-4">
+        <!-- Zone pour visiteurs non connectés -->
+        {% if not app.user %}
+            <div class="text-center mb-4">
                 <p class="fs-5">Rejoignez-nous dès maintenant pour covoiturer autrement !</p>
-                <a href="/login" class="btn btn-primary me-2">Connexion</a>
-                <a href="/register" class="btn btn-primary">Inscription</a>
+                <a href="{{ path('app_login') }}" class="btn btn-ecoride btn-ecoride-secondary me-2">Connexion</a>
+                <a href="{{ path('app_register') }}" class="btn btn-ecoride btn-ecoride-primary">Créer un compte</a>
             </div>
+        {% endif %}
 
-        </section>
-       
     </main>
-
-
 </div>
-
-<!-- ✅ Script dynamique d’accueil -->
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const token = localStorage.getItem('apiToken');
-        const pseudo = localStorage.getItem('pseudo');
-
-        const connectedBlock = document.getElementById('connected-home');
-        const guestBlock = document.getElementById('guest-home');
-        const pseudoSpan = document.getElementById('home-pseudo');
-
-        if (token && pseudo) {
-            connectedBlock?.classList.remove('d-none');
-            guestBlock?.classList.add('d-none');
-            if (pseudoSpan) pseudoSpan.textContent = pseudo;
-        } else {
-            guestBlock?.classList.remove('d-none');
-            connectedBlock?.classList.add('d-none');
-        }
-    });
-</script>
 {% endblock %}

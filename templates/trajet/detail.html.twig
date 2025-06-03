@@ -40,23 +40,22 @@
                     <p><strong>Animaux :</strong> {{ trajet.vehicule.preferChien ? 'Oui' : 'Non' }}</p>
 
                     <h6 class="mt-4">📝 Avis sur le chauffeur</h6>
-
-                        {% if trajet.chauffeur.avisRecus is empty %}
-                            <p class="text-muted">Aucun avis pour ce chauffeur pour le moment.</p>
-                        {% else %}
-                            <ul class="list-group">
-                                {% for avis in trajet.chauffeur.avisRecus %}
-                                    <li class="list-group-item">
-                                        <strong>{{ avis.auteur.pseudo }}</strong> — ⭐️ {{ avis.note }}/5<br>
-                                        <em>{{ avis.commentaire }}</em>
-                                        <div class="text-muted small">{{ avis.createdAt|date('d/m/Y') }}</div>
-                                    </li>
-                                {% endfor %}
-                            </ul>
-                        {% endif %}
+                    {% if trajet.chauffeur.avisRecus is empty %}
+                        <p class="text-muted">Aucun avis pour ce chauffeur pour le moment.</p>
+                    {% else %}
+                        <ul class="list-group">
+                            {% for avis in trajet.chauffeur.avisRecus %}
+                                <li class="list-group-item">
+                                    <strong>{{ avis.auteur.pseudo }}</strong> — ⭐️ {{ avis.note }}/5<br>
+                                    <em>{{ avis.commentaire }}</em>
+                                    <div class="text-muted small">{{ avis.createdAt|date('d/m/Y') }}</div>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
 
                     <div class="mt-4 text-end">
-                        <a href="{{ path('app_recherche_resultats', { 
+                        <a href="{{ path('app_recherche_resultats', {
                             villeDepart: villeDepart,
                             villeArrivee: villeArrivee,
                             date: date
@@ -64,7 +63,43 @@
                     </div>
                 </div>
             </div>
+
+            {% if is_granted('ROLE_USER') %}
+                {% if trajet.placesRestantes > 0 and app.user.credits >= trajet.prix %}
+                    <div class="text-center mt-5">
+                        <form method="post"
+                              action="{{ path('trajet_participer', { id: trajet.id }) }}"
+                              onsubmit="return confirmParticipation(event, {{ trajet.prix }})">
+                            <button type="submit" class="btn btn-success btn-lg px-5 py-2">
+                                🚗 Participer à ce trajet
+                            </button>
+                        </form>
+                    </div>
+                {% elseif trajet.placesRestantes == 0 %}
+                    <p class="text-danger text-center mt-4 fs-5">Ce trajet est complet.</p>
+                {% elseif app.user.credits < trajet.prix %}
+                    <p class="text-center mt-4 fs-5" style="color: var(--ecoride-accent);">
+                        Crédits insuffisants pour participer à ce trajet.
+                    </p>
+                {% endif %}
+            {% else %}
+                <div class="text-center mt-4">
+                    <a href="{{ path('app_login') }}" class="btn btn-ecoride btn-ecoride-secondary me-2">Connexion</a>
+                    <a href="{{ path('app_register') }}" class="btn btn-ecoride btn-ecoride-primary">Créer un compte</a>
+                </div>
+            {% endif %}
         </div>
     </div>
 </div>
+
+<script>
+    function confirmParticipation(event, prix) {
+        const confirmed = confirm(`Confirmez-vous votre participation à ce trajet ? ${prix.toFixed(2)} crédits seront déduits.`);
+        if (!confirmed) {
+            event.preventDefault();
+            return false;
+        }
+        return true;
+    }
+</script>
 {% endblock %}

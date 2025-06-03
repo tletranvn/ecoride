@@ -17,13 +17,23 @@ security:
             security: false
         main:
             lazy: true
-            stateless: true
             provider: app_user_provider
-            json_login:
-                check_path: app_api_login 
-                username_path: email
-                password_path: password
-            custom_authenticator: App\Security\ApiTokenAuthenticator
+            form_login:
+                login_path: app_login
+                check_path: app_login
+                enable_csrf: true
+            logout:
+                path: app_logout
+                # where to redirect after logout
+                # target: app_any_route
+            # Pour le moment on retire l'ancien système API/token
+            # stateless: true
+            # json_login:
+            #     check_path: app_api_login 
+            #     username_path: email
+            #     password_path: password
+            # custom_authenticator: App\Security\ApiTokenAuthenticator
+
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall
@@ -34,10 +44,12 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        - { path: ^/api/registration, roles: PUBLIC_ACCESS }
-        - { path: ^/api/login, roles: PUBLIC_ACCESS }
-        - { path: ^/api/doc, roles: PUBLIC_ACCESS }
-        - { path: ^/api, roles: ROLE_USER }
+        # Anciennes routes API 
+        # - { path: ^/api/registration, roles: PUBLIC_ACCESS }
+        # - { path: ^/api/login, roles: PUBLIC_ACCESS }
+        # - { path: ^/api/doc, roles: PUBLIC_ACCESS }
+        # - { path: ^/api, roles: ROLE_USER }
+
 
 when@test:
     security:

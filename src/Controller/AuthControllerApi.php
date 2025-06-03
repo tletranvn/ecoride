@@ -6,7 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-final class AuthController extends AbstractController
+final class AuthControllerApi extends AbstractController
 {
     #[Route('/register', name: 'app_register', methods: ['GET'])]
     public function registerForm(): Response
