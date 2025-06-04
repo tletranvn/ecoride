@@ -43,8 +43,8 @@ class Trajet
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $updatedAt = null;
 
-    //ajouter durée du trajet pour US4
-    #[ORM\Column(type: 'integer')]
+    //ajouter durée du trajet pour US4, pas de calculation de durée, à voir on va le faire plus tard en US9?
+    #[ORM\Column(type: 'integer', nullable: true)]
     private ?int $duree = null;
 
     #[ORM\ManyToOne(inversedBy: 'trajets')]

@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use App\Form\ChoixProfilType;
+use App\Entity\Trajet;
+use App\Form\TrajetType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use App\Repository\VehiculeRepository;
@@ -46,6 +48,48 @@ class EspaceUtilisateurController extends AbstractController
         }
 
         return $this->render('espace_utilisateur/choix-profil.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
+
+    /** US9 saisir un voyage pour formulaire TrajetType */
+    #[Route('/espace-utilisateur/nouveau-trajet', name: 'app_espace_trajet_new')]
+    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $user = $this->getUser();
+
+        // Vérifier que l'utilisateur a le bon rôle
+        if (!in_array($user->getUserType(), ['chauffeur', 'passager_chauffeur'])) {
+            $this->addFlash('warning', 'Seuls les conducteurs peuvent ajouter un trajet.');
+            return $this->redirectToRoute('app_espace_utilisateur');
+        }
+
+        $trajet = new Trajet();
+        $form = $this->createForm(TrajetType::class, $trajet);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            // Données calculées automatiquement
+            $trajet->setChauffeur($user);
+            $trajet->setPlacesRestantes($trajet->getPlacesTotal());
+            $vehicule = $trajet->getVehicule();
+
+            $isElec = strtolower($vehicule->getTypeEnergie()) === 'électrique';
+            $trajet->setIsEcoCertifie($isElec);
+
+            $trajet->setCreatedAt(new \DateTimeImmutable());
+
+            // Déduire 2 crédits au chauffeur
+            $user->setCredits($user->getCredits() - 2);
+
+            $entityManager->persist($trajet);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Trajet ajouté avec succès.');
+            return $this->redirectToRoute('app_espace_utilisateur');
+        }
+
+        return $this->render('espace_utilisateur/new-trajet.html.twig', [
             'form' => $form->createView(),
         ]);
     }

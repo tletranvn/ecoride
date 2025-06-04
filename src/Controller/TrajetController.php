@@ -4,6 +4,8 @@ namespace App\Controller;
 
 use App\Entity\Trajet;
 use App\Entity\Participation;
+use App\Entity\User;
+use App\Form\TrajetType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -12,8 +14,8 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class TrajetController extends AbstractController
 {
-    #[Route('/trajet/{id}', name: 'trajet_detail')]
-    public function show(int $id,EntityManagerInterface $em,Request $request): Response {
+    #[Route('/trajet/{id}', name: 'trajet_detail')] // Route pour afficher le détail d'un trajet pour US5
+    public function show($id,EntityManagerInterface $em,Request $request): Response {
 
         // Récupérer le trajet par son ID
         $trajet = $em->getRepository(Trajet::class)->find($id);
@@ -63,7 +65,7 @@ class TrajetController extends AbstractController
         ]);
     }
 
-
+    /** US6 et US8 participer à un covoiturage */
     #[Route('/trajet/{id}/participer', name: 'trajet_participer', methods: ['POST'])]
     public function participer(int $id, EntityManagerInterface $em): Response // Participer à un trajet
     {
@@ -122,4 +124,5 @@ class TrajetController extends AbstractController
 
     }
 
+    
 }
