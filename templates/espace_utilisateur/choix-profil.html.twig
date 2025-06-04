@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Choix du rôle - EcoRide{% endblock %}
+
+{% block body %}
+<div class="container mt-5 mb-5">
+    <h2 class="text-center mb-4">Choisissez votre rôle sur EcoRide</h2>
+
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-4">
+
+            {{ form_start(form) }}
+
+            <div class="mb-4">
+                <label class="form-label" style="font-weight: bold; font-size: 1.1rem;">
+                    {{ form_label(form.userType) }}
+                </label>
+
+                <div class="form-check mb-2">
+                    {{ form_widget(form.userType.0, {'attr': {'class': 'form-check-input', 'id': 'type_passager'}}) }}
+                    <label class="form-check-label" for="type_passager" style="font-size: 1.1rem;">
+                        Passager
+                    </label>
+                </div>
+
+                <div class="form-check mb-2">
+                    {{ form_widget(form.userType.1, {'attr': {'class': 'form-check-input', 'id': 'type_chauffeur'}}) }}
+                    <label class="form-check-label" for="type_chauffeur" style="font-size: 1.1rem;">
+                        Chauffeur
+                    </label>
+                </div>
+
+                <div class="form-check mb-3">
+                    {{ form_widget(form.userType.2, {'attr': {'class': 'form-check-input', 'id': 'type_mixte'}}) }}
+                    <label class="form-check-label" for="type_mixte" style="font-size: 1.1rem;">
+                        Passager + Chauffeur
+                    </label>
+                </div>
+
+                {{ form_errors(form.userType) }}
+            </div>
+
+            <div class="text-center">
+                <button class="btn btn-ecoride btn-ecoride-primary px-4 py-2">
+                    Enregistrer mon rôle
+                </button>
+            </div>
+
+            {{ form_end(form) }}
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -6,9 +6,25 @@
 <div class="container mt-5 mb-5">
     <h2 class="mb-4 text-center">Bienvenue dans votre espace, {{ user.pseudo }}</h2>
 
-    <p class="text-center mb-4">
-        Vous êtes <strong>{{ user.userType|title }}</strong>
-    </p>
+    {% if user.userType is null %}
+        <p class="text-center text-muted mb-4">
+            Vous n’avez pas encore choisi de rôle sur la plateforme.
+        </p>
+        <div class="text-center mb-4">
+            <a href="{{ path('app_choix_profil') }}" class="btn btn-ecoride btn-ecoride-primary px-4 py-2">
+                Choisir mon rôle
+            </a>
+        </div>
+    {% else %}
+        <p class="text-center mb-4">
+            Vous êtes <strong>{{ user.userType|title }}</strong>
+        </p>
+        <div class="text-center mb-4">
+            <a href="{{ path('app_choix_profil') }}" class="btn btn-outline-secondary btn-sm">
+                Modifier mon rôle
+            </a>
+        </div>
+    {% endif %}
 
     {% if 'chauffeur' in user.userType %}
         <div class="text-center mb-4">
