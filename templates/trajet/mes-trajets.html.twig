@@ -29,8 +29,14 @@
                             <p><strong>Durée :</strong> {{ trajet.duree }} min</p>
                             <p><strong>Prix payé :</strong> {{ trajet.prix }} crédits</p>
                             <p><strong>Chauffeur :</strong> {{ trajet.chauffeur.pseudo }}</p>
-                            <a href="{{ path('trajet_detail', { id: trajet.id }) }}" class="btn btn-outline-primary btn-sm">Voir le détail</a>
-                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mt-3">
+                        <a href="{{ path('trajet_detail', { id: trajet.id }) }}" class="btn btn-ecoride-primary btn-sm">Voir le détail</a>
+                        <form action="{{ path('trajet_annuler_participation', { id: participation.trajet.id }) }}" method="post" onsubmit="return confirm('Confirmer l’annulation ?')">
+                            <button class="btn btn-ecoride btn-ecoride-danger btn-sm" type="submit">
+                                Annuler ma participation
+                            </button>
+                        </form>
                     </div>
                 </div>
             {% endfor %}

@@ -32,11 +32,12 @@
                 Ajouter un véhicule
             </a>
         </div>
-         <div class="text-center mb-4">
+        <div class="text-center mb-4">
             <a href="{{ path('app_espace_trajet_new') }}" class="btn btn-ecoride btn-ecoride-primary px-4 py-2">
                 Saisir un nouveau trajet
             </a>
         </div>
+
     {% endif %}
 
     {% if vehicules is not empty %}
@@ -61,5 +62,36 @@
     {% else %}
         <p class="text-muted text-center">Aucun véhicule enregistré pour le moment.</p>
     {% endif %}
+
+    {% if trajets is not empty %}
+    <h4 class="mt-5">Vos trajets proposés :</h4>
+    <div class="row mt-3">
+        {% for trajet in trajets %}
+            <div class="col-md-6 mb-3">
+                <div class="card p-3">
+                    <h5>{{ trajet.villeDepart }} → {{ trajet.villeArrivee }}</h5>
+                    <p><strong>Date :</strong> {{ trajet.dateDepart|date('d/m/Y H:i') }}</p>
+                    <p><strong>Durée :</strong> {{ trajet.duree }} min</p>
+                    <p><strong>Places restantes :</strong> {{ trajet.placesRestantes }}</p>
+                    <p><strong>Prix :</strong> {{ trajet.prix }} crédits</p>
+
+                    <div class="d-flex justify-content-between align-items-center mt-2">
+                        <a href="{{ path('app_espace_trajet_detail', { id: trajet.id }) }}" class="btn btn-outline-primary btn-sm">
+                            Voir le détail
+                        </a>
+                        <form action="{{ path('app_espace_trajet_annuler', { id: trajet.id }) }}" method="post" onsubmit="return confirm('Annuler ce trajet ?')">
+                            <button class="btn btn-ecoride btn-ecoride-danger btn-sm" type="submit">
+                                Annuler ce trajet
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    {% else %}
+        <p class="text-muted text-center">Aucun trajet proposé pour le moment.</p>
+    {% endif %}
+
 </div>
 {% endblock %}

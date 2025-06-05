@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détail du trajet proposé - EcoRide{% endblock %}
+
+{% block body %}
+<div class="container mt-5 mb-5">
+    <h2 class="text-center mb-4">Détail de votre trajet</h2>
+
+    <div class="card shadow-sm p-4">
+        <h4>{{ trajet.villeDepart }} → {{ trajet.villeArrivee }}</h4>
+
+        <p><strong>Date de départ :</strong> {{ trajet.dateDepart|date('d/m/Y H:i') }}</p>
+        <p><strong>Durée estimée :</strong> {{ trajet.duree }} minutes</p>
+        <p><strong>Prix :</strong> {{ trajet.prix }} €</p>
+        <p><strong>Nombre de places :</strong> {{ trajet.placesTotal }}</p>
+        <p><strong>Places restantes :</strong> {{ trajet.placesRestantes }}</p>
+        <p><strong>Véhicule utilisé :</strong> {{ trajet.vehicule.marque }} {{ trajet.vehicule.modele }} ({{ trajet.vehicule.immatriculation }})</p>
+
+        <p><strong>Certifié éco :</strong> {{ trajet.isEcoCertifie ? 'Oui' : 'Non' }}</p>
+
+    
+    </div>
+</div>
+{% endblock %}

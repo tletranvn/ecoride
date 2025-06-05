@@ -124,5 +124,41 @@ class TrajetController extends AbstractController
 
     }
 
-    
+    // US10 : un passager peut annuler sa participation à un trajet
+    #[Route('/trajet/{id}/annuler-participation', name: 'trajet_annuler_participation')]
+    public function annulerParticipation(int $id, EntityManagerInterface $em): Response
+    {
+        $user = $this->getUser();
+        $trajet = $em->getRepository(Trajet::class)->find($id);
+
+        if (!$trajet || !$user) {
+            throw $this->createNotFoundException('Trajet ou utilisateur non trouvé.');
+        }
+
+        // Trouver la participation du user pour ce trajet
+        $participation = $em->getRepository(Participation::class)->findOneBy([
+            'user' => $user,
+            'trajet' => $trajet,
+        ]);
+
+        if (!$participation) {
+            $this->addFlash('warning', 'Vous ne participez pas à ce trajet.');
+            return $this->redirectToRoute('trajet_mes_trajets');
+        }
+
+        // Supprimer la participation
+        $user->removeParticipation($participation);
+        $trajet->removeParticipation($participation);
+
+        // Récupérer les crédits et places
+        $user->setCredits($user->getCredits() + $trajet->getPrix());
+        $trajet->setPlacesRestantes($trajet->getPlacesRestantes() + 1);
+
+        $em->remove($participation);
+        $em->flush();
+
+        $this->addFlash('success', 'Votre participation a été annulée.');
+        return $this->redirectToRoute('trajet_mes_trajets');
+    }
+
 }

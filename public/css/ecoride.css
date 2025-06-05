@@ -21,16 +21,19 @@ a {
 .navbar, footer {
     background-color: var(--ecoride-dark);
 }
-
+/*
 .btn-primary {
     background-color: var(--ecoride-accent);
     border: none;
 }
 
 .btn-primary:hover {
-    background-color: #198754 !important; /* Vert Bootstrap */
+    background-color: #198754 !important; 
     color: white;
 }
+*/
+
+/*bouton connexion et inscription*/
 
 .btn-ecoride {
     font-size: 1.1rem;
@@ -61,6 +64,19 @@ a {
     color: white;
 }
 
+/*bouton annulation*/
+
+.btn-ecoride-danger {
+    background-color: #dc3545; 
+    color: white;
+}
+
+.btn-ecoride-danger:hover {
+    background-color: #bb2d3b;
+    color: white;
+}
+
+/* Card styles */
 .card {
     background-color: var(--ecoride-neutral);
     color: var(--ecoride-bg);

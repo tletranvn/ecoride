@@ -22,10 +22,14 @@ class EspaceUtilisateurController extends AbstractController
     {
         $user = $this->getUser();
         $vehicules = $vehiculeRepository->findBy(['utilisateur' => $user]);
+        //ajouter les trajets proposés par l'utilisateur (chauffeur/passager_chauffeur)
+        $trajets = $user->getTrajets();
+
 
         return $this->render('espace_utilisateur/utilisateur.html.twig', [
             'user' => $user,
             'vehicules' => $vehicules,
+            'trajets' => $trajets,
         ]);
     }
 
@@ -92,6 +96,60 @@ class EspaceUtilisateurController extends AbstractController
         return $this->render('espace_utilisateur/new-trajet.html.twig', [
             'form' => $form->createView(),
         ]);
+    }
+
+    /** US10 un conducteur peut visionner ses trajets */
+
+    #[Route('/espace-utilisateur/trajet/{id}', name: 'app_espace_trajet_detail')]
+    public function showTrajetChauffeur(int $id, EntityManagerInterface $em): Response
+    {
+        $trajet = $em->getRepository(Trajet::class)->find($id);
+
+        if (!$trajet) {
+            throw $this->createNotFoundException('Trajet introuvable.');
+        }
+
+        $user = $this->getUser();
+
+        if ($trajet->getChauffeur() !== $user) {
+            $this->addFlash('danger', 'Accès non autorisé à ce trajet.');
+            return $this->redirectToRoute('app_espace_utilisateur');
+        }
+
+        return $this->render('espace_utilisateur/detail-chauffeur.html.twig', [
+            'trajet' => $trajet,
+        ]);
+    }
+
+    /** US10 un conducteur peut annuler ses trajets */
+    #[Route('/espace-utilisateur/annuler-trajet/{id}', name: 'app_espace_trajet_annuler', methods: ['POST'])]
+    public function annulerTrajet(int $id, EntityManagerInterface $em): Response
+    {
+        $trajet = $em->getRepository(Trajet::class)->find($id);
+
+        if (!$trajet) {
+            $this->addFlash('danger', 'Trajet introuvable.');
+            return $this->redirectToRoute('app_espace_utilisateur');
+        }
+
+        $user = $this->getUser();
+        if (!$user || $trajet->getChauffeur() !== $user) {
+            $this->addFlash('danger', 'Vous ne pouvez pas annuler ce trajet.');
+            return $this->redirectToRoute('app_espace_utilisateur');
+        }
+
+        // Recréditer les participants
+        foreach ($trajet->getParticipations() as $participation) {
+            $passager = $participation->getUser();
+            $passager->setCredits($passager->getCredits() + $trajet->getPrix());
+            $em->remove($participation); // facultatif : ou laisser si cascade persist
+        }
+
+        $em->remove($trajet); // suppression définitive
+        $em->flush();
+
+        $this->addFlash('success', 'Le trajet a été annulé et les participants ont été recrédités.');
+        return $this->redirectToRoute('app_espace_utilisateur');
     }
 
 }
