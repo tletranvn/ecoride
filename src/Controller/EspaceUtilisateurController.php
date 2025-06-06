@@ -17,21 +17,21 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted('ROLE_USER')]
 class EspaceUtilisateurController extends AbstractController
 {
-    #[Route('/espace-utilisateur', name: 'app_espace_utilisateur')]
-    public function index(VehiculeRepository $vehiculeRepository): Response
-    {
-        $user = $this->getUser();
-        $vehicules = $vehiculeRepository->findBy(['utilisateur' => $user]);
-        //ajouter les trajets proposés par l'utilisateur (chauffeur/passager_chauffeur)
-        $trajets = $user->getTrajets();
+    //#[Route('/espace-utilisateur', name: 'app_espace_utilisateur')], ne plus besoin, tout centralisé dans CovoiturageController
+    //public function index(VehiculeRepository $vehiculeRepository): Response
+    //{
+    //    $user = $this->getUser();
+    //    $vehicules = $vehiculeRepository->findBy(['utilisateur' => $user]);
+    //    //ajouter les trajets proposés par l'utilisateur (chauffeur/passager_chauffeur)
+    //    $trajets = $user->getTrajets();
 
 
-        return $this->render('espace_utilisateur/utilisateur.html.twig', [
-            'user' => $user,
-            'vehicules' => $vehicules,
-            'trajets' => $trajets,
-        ]);
-    }
+    //    return $this->render('espace_utilisateur/utilisateur.html.twig', [
+    //        'user' => $user,
+    //        'vehicules' => $vehicules,
+    //        'trajets' => $trajets,
+    //    ]);
+    //}
 
     // Route pour choisir le profil de l'utilisateur US8
     // Cette route permet à l'utilisateur de choisir son rôle (passager, chauffeur, passager + chauffeur)
@@ -48,7 +48,7 @@ class EspaceUtilisateurController extends AbstractController
             $entityManager->flush();
 
             $this->addFlash('success', 'Votre rôle a été mis à jour.');
-            return $this->redirectToRoute('app_espace_utilisateur');
+            return $this->redirectToRoute('app_covoiturage'); // Rediriger vers la page de covoiturage
         }
 
         return $this->render('espace_utilisateur/choix-profil.html.twig', [
@@ -58,14 +58,14 @@ class EspaceUtilisateurController extends AbstractController
 
     /** US9 saisir un voyage pour formulaire TrajetType */
     #[Route('/espace-utilisateur/nouveau-trajet', name: 'app_espace_trajet_new')]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function newTrajetChauffeur(Request $request, EntityManagerInterface $entityManager): Response
     {
         $user = $this->getUser();
 
         // Vérifier que l'utilisateur a le bon rôle
         if (!in_array($user->getUserType(), ['chauffeur', 'passager_chauffeur'])) {
             $this->addFlash('warning', 'Seuls les conducteurs peuvent ajouter un trajet.');
-            return $this->redirectToRoute('app_espace_utilisateur');
+            return $this->redirectToRoute('app_covoiturage');
         }
 
         $trajet = new Trajet();
@@ -90,7 +90,7 @@ class EspaceUtilisateurController extends AbstractController
             $entityManager->flush();
 
             $this->addFlash('success', 'Trajet ajouté avec succès.');
-            return $this->redirectToRoute('app_espace_utilisateur');
+            return $this->redirectToRoute('app_covoiturage');
         }
 
         return $this->render('espace_utilisateur/new-trajet.html.twig', [
@@ -113,7 +113,7 @@ class EspaceUtilisateurController extends AbstractController
 
         if ($trajet->getChauffeur() !== $user) {
             $this->addFlash('danger', 'Accès non autorisé à ce trajet.');
-            return $this->redirectToRoute('app_espace_utilisateur');
+            return $this->redirectToRoute('app_covoiturage');
         }
 
         return $this->render('espace_utilisateur/detail-chauffeur.html.twig', [
@@ -123,19 +123,19 @@ class EspaceUtilisateurController extends AbstractController
 
     /** US10 un conducteur peut annuler ses trajets */
     #[Route('/espace-utilisateur/annuler-trajet/{id}', name: 'app_espace_trajet_annuler', methods: ['POST'])]
-    public function annulerTrajet(int $id, EntityManagerInterface $em): Response
+    public function annulerTrajetChauffeur(int $id, EntityManagerInterface $em): Response
     {
         $trajet = $em->getRepository(Trajet::class)->find($id);
 
         if (!$trajet) {
             $this->addFlash('danger', 'Trajet introuvable.');
-            return $this->redirectToRoute('app_espace_utilisateur');
+            return $this->redirectToRoute('app_covoiturage');
         }
 
         $user = $this->getUser();
         if (!$user || $trajet->getChauffeur() !== $user) {
             $this->addFlash('danger', 'Vous ne pouvez pas annuler ce trajet.');
-            return $this->redirectToRoute('app_espace_utilisateur');
+            return $this->redirectToRoute('app_covoiturage');
         }
 
         // Recréditer les participants
@@ -149,7 +149,7 @@ class EspaceUtilisateurController extends AbstractController
         $em->flush();
 
         $this->addFlash('success', 'Le trajet a été annulé et les participants ont été recrédités.');
-        return $this->redirectToRoute('app_espace_utilisateur');
+        return $this->redirectToRoute('app_covoiturage');
     }
 
 }

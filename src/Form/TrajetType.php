@@ -29,36 +29,36 @@ class TrajetType extends AbstractType
         $user = $this->security->getUser();
 
         $builder
-            // ✅ Champ avec datalist pour la ville de départ
+            // Champ avec datalist pour la ville de départ
             ->add('villeDepart', TextType::class, [
                 'label' => 'Ville de départ',
                 'attr' => ['list' => 'villes'] // <- associe au <datalist id="villes"> dans le template
             ])
 
-            // ✅ Champ avec datalist pour la ville d’arrivée
+            // Champ avec datalist pour la ville d’arrivée
             ->add('villeArrivee', TextType::class, [
                 'label' => 'Ville d’arrivée',
                 'attr' => ['list' => 'villes'] // <- même principe
             ])
 
-            // 🕒 Date et heure dans un seul champ
+            // Date et heure dans un seul champ
             ->add('dateDepart', DateTimeType::class, [
                 'label' => 'Date et heure de départ',
                 'widget' => 'single_text'
             ])
 
-            // 👥 Nombre de places proposées
+            // Nombre de places proposées
             ->add('placesTotal', IntegerType::class, [
                 'label' => 'Nombre total de places'
             ])
 
-            // 💶 Prix avec format monétaire
+            // Prix avec format monétaire
             ->add('prix', MoneyType::class, [
                 'label' => 'Prix du trajet (€)',
                 'currency' => 'EUR'
             ])
 
-            // 🚗 Sélection du véhicule parmi ceux du user connecté
+            // Sélection du véhicule parmi ceux du user connecté
             ->add('vehicule', EntityType::class, [
                 'class' => Vehicule::class,
                 'choices' => $user ? $user->getVehicules() : [],

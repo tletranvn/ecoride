@@ -22,6 +22,9 @@ class Participation
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
 
+    #[ORM\Column(type: 'integer')]
+    private ?int $creditsUtilises = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -59,6 +62,18 @@ class Participation
     public function setCreatedAt(\DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getCreditsUtilises(): ?int
+    {
+        return $this->creditsUtilises;
+    }
+
+    public function setCreditsUtilises(int $credits): static
+    {
+        $this->creditsUtilises = $credits;
 
         return $this;
     }

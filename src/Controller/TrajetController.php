@@ -11,11 +11,14 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+// US10 pour envoi d'email
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 
 class TrajetController extends AbstractController
 {
     #[Route('/trajet/{id}', name: 'trajet_detail')] // Route pour afficher le détail d'un trajet pour US5
-    public function show($id,EntityManagerInterface $em,Request $request): Response {
+    public function showTrajetPassager($id,EntityManagerInterface $em,Request $request): Response {
 
         // Récupérer le trajet par son ID
         $trajet = $em->getRepository(Trajet::class)->find($id);
@@ -39,56 +42,60 @@ class TrajetController extends AbstractController
         ]);
     }
 
-    #[Route('/mes-trajets', name: 'trajet_mes_trajets')]
-    public function mesTrajets(): Response
-    {
-        // Récupérer l'utilisateur connecté
-        $user = $this->getUser();
+    //#[Route('/mes-trajets', name: 'trajet_mes_trajets')] ne plus besoin, tout centralisé dans CovoiturageController
+    //public function mesTrajets(): Response
+    //{
+    //    // Récupérer l'utilisateur connecté
+    //    $user = $this->getUser();
 
-        // Vérifier si l'utilisateur est connecté
-        if (!$user) {
-            $this->addFlash('warning', 'Veuillez vous connecter pour voir vos trajets.');
-            return $this->redirectToRoute('app_login');
-        }
+    //    // Vérifier si l'utilisateur est connecté
+    //    if (!$user) {
+    //        $this->addFlash('warning', 'Veuillez vous connecter pour voir vos trajets.');
+    //        return $this->redirectToRoute('app_login');
+    //    }
 
-        // Récupérer les crédits de l'utilisateur connecté
-        $credits = $user->getCredits(); 
+    //    // Récupérer les crédits de l'utilisateur connecté
+    //   $credits = $user->getCredits(); 
 
-        // Récupérer les participations de l'utilisateur
-        $participations = $user->getParticipations();
+    //    // Récupérer les participations de l'utilisateur
+    //    $participations = $user->getParticipations();
 
-        // rendre la vue avec les participations et les crédits
-        return $this->render('trajet/mes-trajets.html.twig', [
-            'participations' => $participations,
-            'credits' => $credits,
-            'user' => $user,
-        ]);
-    }
+    //    // rendre la vue avec les participations et les crédits
+    //    return $this->render('trajet/mes-trajets.html.twig', [
+    //        'participations' => $participations,
+    //        'credits' => $credits,
+    //        'user' => $user,
+    //    ]);
+    //}
 
-    /** US6 et US8 participer à un covoiturage */
+    /** US6 et US8 participer à un covoiturage + US10 envoyer un email à passager quand annuler un trajet réservé*/
     #[Route('/trajet/{id}/participer', name: 'trajet_participer', methods: ['POST'])]
-    public function participer(int $id, EntityManagerInterface $em): Response // Participer à un trajet
+    public function participer(int $id, EntityManagerInterface $em, MailerInterface $mailer): Response
     {
-        // Récupérer le trajet par son ID
+        // Récupérer le trajet concerné
         $trajet = $em->getRepository(Trajet::class)->find($id);
 
-        // Vérifier si le trajet existe
+        // Vérifier que le trajet existe
         if (!$trajet) {
             throw $this->createNotFoundException('Trajet non trouvé.');
         }
-        // Vérifier si l'utilisateur est connecté
+
+        // Récupérer l'utilisateur connecté
         $user = $this->getUser();
 
+        // Vérifier que l'utilisateur est connecté
         if (!$user) {
             $this->addFlash('danger', 'Vous devez être connecté pour participer à un trajet.');
             return $this->redirectToRoute('app_login');
         }
-        // Vérifier si il reste des places
+
+        // Vérifier qu’il reste des places
         if ($trajet->getPlacesRestantes() <= 0) {
             $this->addFlash('warning', 'Ce trajet est complet.');
             return $this->redirectToRoute('trajet_detail', ['id' => $id]);
         }
-        // Vérifier si l'utilisateur a suffisamment de crédits
+
+        // Vérifier que l'utilisateur a assez de crédits
         if ($user->getCredits() < $trajet->getPrix()) {
             $this->addFlash('warning', 'Crédits insuffisants pour participer à ce trajet.');
             return $this->redirectToRoute('trajet_detail', ['id' => $id]);
@@ -104,25 +111,41 @@ class TrajetController extends AbstractController
         $participation->setTrajet($trajet);
         $participation->setCreatedAt(new \DateTimeImmutable());
 
-        // Mise à jour des relations inversées
+        // Ajout aux relations inversées
         $user->addParticipation($participation);
         $trajet->addParticipation($participation);
 
-        // Mettre à jour crédits et places
-        $user->setCredits($user->getCredits() - $trajet->getPrix());
-        $trajet->setPlacesRestantes($trajet->getPlacesRestantes() - 1);
-
+        // Enregistrer en base de données
         $em->persist($participation);
         $em->flush();
 
+        // --- ENVOI DE L'EMAIL ---
+        $email = (new Email())
+            ->from('no-reply@ecoride.fr') // Adresse de l'expéditeur
+            ->to($user->getEmail())       // Email du passager
+            ->subject('Confirmation de participation au trajet EcoRide')
+            ->html("
+                <p>Bonjour <strong>{$user->getPseudo()}</strong>,</p>
+                <p>Merci pour votre réservation sur EcoRide !</p>
+                <p>Vous participez maintenant au trajet :</p>
+                <ul>
+                    <li><strong>Trajet :</strong> {$trajet->getVilleDepart()} → {$trajet->getVilleArrivee()}</li>
+                    <li><strong>Date :</strong> {$trajet->getDateDepart()->format('d/m/Y H:i')}</li>
+                    <li><strong>Prix :</strong> {$trajet->getPrix()} crédits</li>
+                    <li><strong>Conducteur :</strong> {$trajet->getChauffeur()->getPseudo()}</li>
+                </ul>
+                <p>Bon voyage avec EcoRide ! 🌱</p>
+            ");
 
-        // Message de confirmation
-        $this->addFlash('success', 'Vous participez maintenant à ce trajet !');
+        $mailer->send($email); // Envoie effectif
 
-        // Rediriger vers la page mes-trajets au lieu de revenir sur le détail
-        return $this->redirectToRoute('trajet_mes_trajets');
+        // Message flash de confirmation
+        $this->addFlash('success', 'Vous participez maintenant à ce trajet ! Un email de confirmation vous a été envoyé.');
 
+        // Redirection vers "mes trajets"
+        return $this->redirectToRoute('app_covoiturage');
     }
+
 
     // US10 : un passager peut annuler sa participation à un trajet
     #[Route('/trajet/{id}/annuler-participation', name: 'trajet_annuler_participation')]
@@ -143,7 +166,7 @@ class TrajetController extends AbstractController
 
         if (!$participation) {
             $this->addFlash('warning', 'Vous ne participez pas à ce trajet.');
-            return $this->redirectToRoute('trajet_mes_trajets');
+            return $this->redirectToRoute('app_covoiturage');
         }
 
         // Supprimer la participation
@@ -158,7 +181,7 @@ class TrajetController extends AbstractController
         $em->flush();
 
         $this->addFlash('success', 'Votre participation a été annulée.');
-        return $this->redirectToRoute('trajet_mes_trajets');
+        return $this->redirectToRoute('app_covoiturage');
     }
 
 }

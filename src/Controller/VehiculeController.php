@@ -35,7 +35,7 @@ class VehiculeController extends AbstractController
 
             $this->addFlash('success', 'Véhicule ajouté avec succès.');
 
-            return $this->redirectToRoute('app_espace_utilisateur'); 
+            return $this->redirectToRoute('app_covoiturage'); // Rediriger vers la page de covoiturage
         }
 
         return $this->render('vehicule/new-vehicule.html.twig', [
