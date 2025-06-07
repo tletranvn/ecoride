@@ -110,6 +110,7 @@ class TrajetController extends AbstractController
         $participation->setUser($user);
         $participation->setTrajet($trajet);
         $participation->setCreatedAt(new \DateTimeImmutable());
+        $participation->setCreditsUtilises($trajet->getPrix()); // Enregistrer le montant des crédits utilisés US10
 
         // Ajout aux relations inversées
         $user->addParticipation($participation);
