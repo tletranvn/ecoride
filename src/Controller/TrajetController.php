@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Trajet;
 use App\Entity\Participation;
 use App\Entity\User;
+use App\Entity\Avis;
 use App\Form\TrajetType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -183,6 +184,67 @@ class TrajetController extends AbstractController
 
         $this->addFlash('success', 'Votre participation a été annulée.');
         return $this->redirectToRoute('app_covoiturage');
+    }
+
+    //US11 : un passager peut valider un trajet terminé
+
+    //A. voir tous les trajets à valider
+    #[Route('/mes-validations', name: 'mes_validations')]
+    public function mesValidations(EntityManagerInterface $em): Response
+    {
+        $user = $this->getUser();
+
+        // Rechercher les participations à des trajets terminés mais non encore validées
+        $participations = $em->getRepository(Participation::class)->findBy([
+            'user' => $user,
+            'trajetValide' => null, // pas encore validé
+        ]);
+
+        return $this->render('trajet/mes-validations.html.twig', [
+            'participations' => $participations
+        ]);
+    }
+
+    // B. valider ou signaler un trajet
+    #[Route('/trajet/{id}/valider-participation', name: 'trajet_valider_participation', methods: ['POST'])]
+    public function validerParticipation(int $id, Request $request, EntityManagerInterface $em): Response
+    {
+        $user = $this->getUser();
+        $participation = $em->getRepository(Participation::class)->find($id);
+
+        if (!$participation || $participation->getUser() !== $user) {
+            throw $this->createAccessDeniedException();
+        }
+
+        $isValide = $request->request->get('valider') === '1';
+        $commentaire = $request->request->get('commentaire');
+
+        $participation->setTrajetValide($isValide);
+        $participation->setCommentaire($commentaire);
+
+        if (!$isValide) {
+            // Créer un avis bloqué si problème signalé
+            $avis = new Avis();
+            $avis->setAuteur($user);
+            $avis->setCible($participation->getTrajet()->getChauffeur());
+            $avis->setTrajet($participation->getTrajet());
+            $avis->setNote(0); // ou null selon ta logique
+            $avis->setCommentaire($commentaire);
+            $avis->setCreatedAt(new \DateTimeImmutable());
+            $avis->setIsValidated(false); // à valider plus tard par un employé
+
+            $em->persist($avis);
+        }
+
+        if ($isValide) {
+            $chauffeur = $participation->getTrajet()->getChauffeur();
+            $chauffeur->setCredits($chauffeur->getCredits() + $participation->getCreditsUtilises());
+        }
+
+        $em->flush();
+
+        $this->addFlash('success', $isValide ? 'Merci pour votre validation.' : 'Votre signalement a bien été enregistré.');
+        return $this->redirectToRoute('mes_validations');
     }
 
 }

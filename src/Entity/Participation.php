@@ -25,6 +25,14 @@ class Participation
     #[ORM\Column(type: 'integer')]
     private ?int $creditsUtilises = null;
 
+    //US11 passager peut valider le trajet quand il est terminé
+    #[ORM\Column(type: 'boolean', nullable: true)]
+    private ?bool $trajetValide = null;
+
+    #[ORM\Column(type: 'text', nullable: true)]
+    private ?string $commentaire = null;
+
+
     public function getId(): ?int
     {
         return $this->id;
@@ -77,4 +85,28 @@ class Participation
 
         return $this;
     }
+
+    // US11 passager peut valider le trajet quand il est terminé
+    public function isTrajetValide(): ?bool
+    {
+        return $this->trajetValide;
+    }
+
+    public function setTrajetValide(?bool $valide): static
+    {
+        $this->trajetValide = $valide;
+        return $this;
+    }
+
+    public function getCommentaire(): ?string
+    {
+        return $this->commentaire;
+    }
+
+    public function setCommentaire(?string $commentaire): static
+    {
+        $this->commentaire = $commentaire;
+        return $this;
+    }
+
 }

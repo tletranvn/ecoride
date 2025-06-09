@@ -26,6 +26,11 @@ class Avis
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $updatedAt = null;
 
+    //US11 reporter un problème sur un trajet et attente validation par employé
+    #[ORM\Column(type: 'boolean')]
+    private bool $isValidated = false;
+
+
     #[ORM\ManyToOne(inversedBy: 'avisEcrits')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $auteur = null;
@@ -130,6 +135,18 @@ class Avis
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
+    }
+
+    //US11 reporter un problème sur un trajet et attente validation par employé
+    public function isValidated(): bool
+    {
+        return $this->isValidated;
+    }
+
+    public function setIsValidated(bool $isValidated): static
+    {
+        $this->isValidated = $isValidated;
+        return $this;
     }
 
 }

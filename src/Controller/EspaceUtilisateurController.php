@@ -5,6 +5,8 @@ namespace App\Controller;
 use App\Form\ChoixProfilType;
 use App\Entity\Trajet;
 use App\Form\TrajetType;
+//use App\Controller\MailerInterface;
+
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use App\Repository\VehiculeRepository;
@@ -13,7 +15,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 //use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
-
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 #[IsGranted('ROLE_USER')]
 class EspaceUtilisateurController extends AbstractController
 {
@@ -56,7 +59,7 @@ class EspaceUtilisateurController extends AbstractController
         ]);
     }
 
-    /** US9 saisir un voyage pour formulaire TrajetType */
+    /** US9 chauffeur peut saisir un voyage pour formulaire TrajetType */
     #[Route('/espace-utilisateur/nouveau-trajet', name: 'app_espace_trajet_new')]
     public function newTrajetChauffeur(Request $request, EntityManagerInterface $entityManager): Response
     {
@@ -98,7 +101,7 @@ class EspaceUtilisateurController extends AbstractController
         ]);
     }
 
-    /** US10 un conducteur peut visionner ses trajets */
+    /** US10 un chauffeur peut visionner ses trajets */
 
     #[Route('/espace-utilisateur/trajet/{id}', name: 'app_espace_trajet_detail')]
     public function showTrajetChauffeur(int $id, EntityManagerInterface $em): Response
@@ -150,6 +153,57 @@ class EspaceUtilisateurController extends AbstractController
 
         $this->addFlash('success', 'Le trajet a été annulé et les participants ont été recrédités.');
         return $this->redirectToRoute('app_covoiturage');
+    }
+
+    // US11 un conducteur peut démarrer et terminer un trajet
+    #[Route('/espace-utilisateur/trajet/{id}/demarrer', name: 'app_espace_trajet_start', methods: ['POST'])]
+    public function demarrerTrajetChauffeur(int $id, EntityManagerInterface $em): Response
+    {
+        $user = $this->getUser();
+        $trajet = $em->getRepository(Trajet::class)->find($id);
+
+        if (!$trajet || $trajet->getChauffeur() !== $user) {
+            throw $this->createAccessDeniedException('Accès non autorisé.');
+        }
+
+        $trajet->setIsStarted(true);
+        $em->flush();
+
+        $this->addFlash('success', 'Le trajet a bien démarré.');
+        return $this->redirectToRoute('app_espace_trajet_detail', ['id' => $id]);
+    }
+
+    #[Route('/espace-utilisateur/trajet/{id}/terminer', name: 'app_espace_trajet_stop', methods: ['POST'])]
+    public function terminerTrajetChauffeur(int $id, EntityManagerInterface $em, MailerInterface $mailer): Response
+    {
+        $user = $this->getUser();
+        $trajet = $em->getRepository(Trajet::class)->find($id);
+
+        if (!$trajet || $trajet->getChauffeur() !== $user || !$trajet->isStarted()) {
+            throw $this->createAccessDeniedException('Action non autorisée.');
+        }
+
+        $trajet->setIsCompleted(true);
+        $em->flush();
+
+        // ENVOI MAIL aux passagers
+        foreach ($trajet->getParticipations() as $participation) {
+            $passager = $participation->getUser();
+            $email = (new Email())
+                ->from('no-reply@ecoride.fr')
+                ->to($passager->getEmail())
+                ->subject('EcoRide - Validez votre trajet')
+                ->html("
+                    <p>Bonjour <strong>{$passager->getPseudo()}</strong>,</p>
+                    <p>Votre trajet avec <strong>{$user->getPseudo()}</strong> est terminé.</p>
+                    <p>Merci de vous rendre dans votre espace pour valider que tout s’est bien passé.</p>
+                ");
+
+            $mailer->send($email);
+        }
+
+        $this->addFlash('success', 'Le trajet est terminé. Les passagers ont été notifiés.');
+        return $this->redirectToRoute('app_espace_trajet_detail', ['id' => $id]);
     }
 
 }

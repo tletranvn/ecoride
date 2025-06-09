@@ -47,6 +47,14 @@ class Trajet
     #[ORM\Column(type: 'integer', nullable: true)]
     private ?int $duree = null;
 
+    //ajouter pour US11 démarrer et terminer le trajet
+    #[ORM\Column(type: 'boolean')]
+    private bool $isStarted = false;
+
+    #[ORM\Column(type: 'boolean')]
+    private bool $isCompleted = false;
+
+    //Relations
     #[ORM\ManyToOne(inversedBy: 'trajets')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $chauffeur = null;
@@ -285,4 +293,28 @@ class Trajet
 
         return $this;
     }
+
+    //ajouter pour US11 démarrer et terminer le trajet
+    public function isStarted(): bool
+    {
+        return $this->isStarted;
+    }
+
+    public function setIsStarted(bool $isStarted): static
+    {
+        $this->isStarted = $isStarted;
+        return $this;
+    }
+
+    public function isCompleted(): bool
+    {
+        return $this->isCompleted;
+    }
+
+    public function setIsCompleted(bool $isCompleted): static
+    {
+        $this->isCompleted = $isCompleted;
+        return $this;
+    }
+
 }

@@ -1,0 +1,59 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Valider mes trajets - EcoRide{% endblock %}
+
+{% block body %}
+<div class="container mt-5 mb-5">
+    <h2 class="text-center mb-4">Valider mes trajets terminés</h2>
+
+    {% if participations is empty %}
+        <div class="alert alert-info text-center">
+            Aucun trajet terminé à valider pour le moment.
+        </div>
+    {% else %}
+        <div class="row row-cols-1 g-4">
+            {% for p in participations %}
+                {% set trajet = p.trajet %}
+                <div class="col">
+                    <div class="card shadow-sm p-3">
+                        <h5>{{ trajet.villeDepart }} → {{ trajet.villeArrivee }}</h5>
+                        <p>Date : {{ trajet.dateDepart|date('d/m/Y H:i') }}</p>
+                        <p>Conducteur : {{ trajet.chauffeur.pseudo }}</p>
+                        <p>Crédits utilisés : {{ p.creditsUtilises }}</p>
+
+                        <form method="post" id="form-{{ p.id }}" action="{{ path('trajet_valider_participation', {'id': p.id}) }}">
+                            <div class="mb-2">
+                                <label for="commentaire_{{ p.id }}" class="form-label">Commentaire (en cas de problème) :</label>
+                                <textarea name="commentaire" id="commentaire_{{ p.id }}" class="form-control" rows="2"></textarea>
+                            </div>
+
+                            <div class="d-flex gap-3">
+                                <button type="submit" name="valider" value="1" class="btn btn-success">✅ Tout s’est bien passé</button>
+                                <button type="submit" name="valider" value="0" class="btn btn-danger" onclick="return verifierCommentaire({{ p.id }})">❌ Problème rencontré</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+
+
+{% block javascripts %}
+<script>
+function verifierCommentaire(id) {
+    const textarea = document.getElementById('commentaire_' + id);
+    if (!textarea.value.trim()) {
+        alert("Merci de préciser un commentaire pour expliquer le problème.");
+        textarea.focus();
+        return false;
+    }
+    return true;
+}
+</script>
+{% endblock %}
+
+{% endblock %}
+
+

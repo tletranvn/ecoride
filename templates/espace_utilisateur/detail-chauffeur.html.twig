@@ -18,7 +18,21 @@
 
         <p><strong>Certifié éco :</strong> {{ trajet.isEcoCertifie ? 'Oui' : 'Non' }}</p>
 
-    
+        <hr>
+
+        {% if trajet.isCompleted %}
+            <div class="alert alert-success text-center">
+                ✅ Ce trajet est terminé.
+            </div>
+        {% elseif trajet.isStarted %}
+            <form method="post" action="{{ path('app_espace_trajet_stop', {'id': trajet.id}) }}" class="text-center">
+                <button class="btn btn-warning">🚩 Arrivé à destination</button>
+            </form>
+        {% else %}
+            <form method="post" action="{{ path('app_espace_trajet_start', {'id': trajet.id}) }}" class="text-center">
+                <button class="btn btn-success">Démarrer le trajet</button>
+            </form>
+        {% endif %}
     </div>
 </div>
 {% endblock %}

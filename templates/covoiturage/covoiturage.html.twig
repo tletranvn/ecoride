@@ -21,12 +21,19 @@
             </div>
         {% endif %}
 
-
+        <!-- Message de bienvenue 
         {% if app.user %}
             <div class="alert alert-success text-center">
                 Bonjour {{ app.user.pseudo }} – Vous avez {{ app.user.credits }} crédits.
             </div>
-        {% endif %}
+        {% endif %} -->
+
+        <!-- Voir mes crédits restants -->
+        <div class="text-end mb-3">
+            <span class="badge bg-success fs-6">
+                💳 Crédits restants : <strong>{{ user.credits|number_format(2, '.', ' ') }}</strong>
+            </span>
+        </div>
 
         <!-- Trajets réservés -->
         <section class="mb-5">
@@ -34,67 +41,84 @@
             {% if participation is not empty %}
                 <ul class="list-group">
                     {% for p in participation %}
-                        <li class="list-group-item">
-                            <strong>{{ p.trajet.villeDepart }} → {{ p.trajet.villeArrivee }}</strong> le 
-                            {{ p.trajet.dateDepart|date('d/m/Y H:i') }} – 
-                            Crédits utilisés : {{ p.creditsUtilises }}
+                        {% set trajet = p.trajet %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>{{ trajet.villeDepart }} → {{ trajet.villeArrivee }}</strong><br>
+                                {{ trajet.dateDepart|date('d/m/Y H:i') }} – 
+                                Chauffeur : {{ trajet.chauffeur.pseudo }} – 
+                                Crédits utilisés : {{ p.creditsUtilises }}
+                            </div>
+                            <div class="d-flex justify-content-end align-items-center gap-2">
+                                <a href="{{ path('trajet_detail', { id: trajet.id }) }}" class="btn btn-sm btn-outline-primary me-2">Voir le détail</a>
+
+                                <form action="{{ path('trajet_annuler_participation', { id: trajet.id }) }}" method="post" onsubmit="return confirm('Confirmer l’annulation ?')" style="display:inline;">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete_participation' ~ trajet.id) }}">
+                                    <button class="btn btn-sm btn-outline-danger">Annuler</button>
+                                </form>
+                            </div>
                         </li>
                     {% endfor %}
                 </ul>
             {% else %}
                 <p>Aucune réservation en cours.</p>
             {% endif %}
+            <br>
+            <a href="{{ path('mes_validations') }}" class="btn btn-ecoride btn-ecoride-primary mt-4">
+                ✏️ Voir mes trajets à valider
+            </a>
         </section>
+        
 
         {% if app.user.userType != 'passager' %}
 
-            <!-- Trajets proposés -->
-            <section class="mb-5">
-                <h2>🚗 Mes trajets proposés</h2>
-                {% if trajetsProposes is not empty %}
-                    <ul class="list-group">
-                        {% for trajet in trajetsProposes %}
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <div>
-                                    <strong>{{ trajet.villeDepart }} → {{ trajet.villeArrivee }}</strong> 
-                                    le {{ trajet.dateDepart|date('d/m/Y H:i') }} – 
-                                    {{ trajet.placesRestantes }}/{{ trajet.placesTotal }} places restantes
-                                </div>
-                                <div>
-                                    <a href="{{ path('app_espace_trajet_detail', {'id': trajet.id}) }}" class="btn btn-sm btn-outline-primary me-2">Voir le détail</a>
-                                    <form method="post" action="{{ path('app_espace_trajet_annuler', {'id': trajet.id}) }}" onsubmit="return confirm('Annuler ce trajet ?');">
-                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ trajet.id) }}">
-                                        <button class="btn btn-sm btn-outline-danger">Annuler ce trajet</button>
-                                    </form>
-                                </div>
-                            </li>
-                        {% endfor %}
+        <!-- Trajets proposés -->
+        <section class="mb-5">
+            <h2>🚗 Mes trajets proposés</h2>
+            {% if trajetsProposes is not empty %}
+                <ul class="list-group">
+                    {% for trajet in trajetsProposes %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <strong>{{ trajet.villeDepart }} → {{ trajet.villeArrivee }}</strong><br>
+                                {{ trajet.dateDepart|date('d/m/Y H:i') }} – {{ trajet.placesRestantes }}/{{ trajet.placesTotal }} places restantes<br>      
+                            </div>
+                            <div class="d-flex justify-content-end align-items-center gap-2">
+                                <a href="{{ path('app_espace_trajet_detail', {'id': trajet.id}) }}" class="btn btn-sm btn-outline-primary">Voir le détail</a>
 
-                    </ul>
-                {% else %}
-                    <p>Vous n’avez proposé aucun trajet.</p>
-                {% endif %}
+                                <form method="post" action="{{ path('app_espace_trajet_annuler', {'id': trajet.id}) }}" onsubmit="return confirm('Annuler ce trajet ?');">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ trajet.id) }}">
+                                    <button class="btn btn-sm btn-outline-danger">Annuler</button>
+                                </form>
+                            </div>
+                        </li>
+                    {% endfor %}
 
-                <a href="{{ path('app_espace_trajet_new') }}" class="btn btn-ecoride btn-ecoride-secondary me-2">+ Créer un trajet</a>
-            </section>
+                </ul>
+            {% else %}
+                <p>Vous n’avez proposé aucun trajet.</p>
+            {% endif %}
+            <br>
+            <a href="{{ path('app_espace_trajet_new') }}" class="btn btn-ecoride btn-ecoride-secondary me-2">+ Créer un trajet</a>
+        </section>
 
-            <!-- Véhicules -->
-            <section class="mb-5">
-                <h2>🚙 Mes véhicules</h2>
-                {% if vehicules is not empty %}
-                    <ul class="list-group">
-                        {% for v in vehicules %}
-                            <li class="list-group-item">
-                                {{ v.marque }} {{ v.modele }} – {{ v.typeEnergie|capitalize }}
-                            </li>
-                        {% endfor %}
-                    </ul>
-                {% else %}
-                    <p>Aucun véhicule enregistré.</p>
-                {% endif %}
-
-                <a href="{{ path('app_vehicule_new') }}" class="btn btn-ecoride btn-ecoride-secondary me-2">+ Ajouter un véhicule</a>
-            </section>
+        <!-- Véhicules -->
+        <section class="mb-5">
+            <h2>🚙 Mes véhicules</h2>
+            {% if vehicules is not empty %}
+                <ul class="list-group">
+                    {% for v in vehicules %}
+                        <li class="list-group-item">
+                            {{ v.marque }} {{ v.modele }} – {{ v.typeEnergie|capitalize }}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>Aucun véhicule enregistré.</p>
+            {% endif %}
+            <br>
+            <a href="{{ path('app_vehicule_new') }}" class="btn btn-ecoride btn-ecoride-secondary me-2">+ Ajouter un véhicule</a>
+        </section>
             
         {% endif %}
     </main>
