@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Espace Administrateur{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h1 class="mb-4">Tableau de bord Administrateur</h1>
+
+    <div class="row">
+        <div class="col-md-4 mb-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">👥 Créer un employé</h5>
+                    <p class="card-text">Créer un compte utilisateur avec rôle employé.</p>
+                    <a href="{{ path('app_espace_admin_creer_employe') }}" class="btn btn-primary">Créer</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">📈 Statistiques</h5>
+                    <p class="card-text">Graphiques des covoiturages et crédits.</p>
+                    <a href="#" class="btn btn-secondary">Voir les graphiques</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-3">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">🔒 Gestion des comptes</h5>
+                    <p class="card-text">Suspendre ou réactiver des comptes.</p>
+                    <a href="#" class="btn btn-danger">Gérer</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

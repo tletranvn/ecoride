@@ -1,0 +1,62 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Créer un nouvel employé - EcoRide{% endblock %}
+
+{% block body %}
+<div class="container mt-5 mb-5">
+    <h2 class="text-center mb-4">Créer un nouvel employé</h2>
+
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            {% for message in app.flashes('success') %}
+                <div class="alert alert-success text-center">{{ message }}</div>
+            {% endfor %}
+            {% for message in app.flashes('danger') %}
+                <div class="alert alert-danger text-center">{{ message }}</div>
+            {% endfor %}
+
+            {{ form_start(form) }}
+
+                <div class="mb-3">
+                    {{ form_label(form.email, 'Adresse email', {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.email, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.email) }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form_label(form.pseudo, 'Pseudo', {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.pseudo, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.pseudo) }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form_label(form.password, 'Mot de passe', {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.password, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.password) }}
+                </div>
+
+                <hr>
+
+                <div class="mb-3">
+                    {{ form_label(form.poste, 'Poste', {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.poste, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.poste) }}
+                </div>
+
+                <div class="mb-3">
+                    {{ form_label(form.dateEmbauche, 'Date d\'embauche', {'label_attr': {'class': 'form-label'}}) }}
+                    {{ form_widget(form.dateEmbauche, {'attr': {'class': 'form-control'}}) }}
+                    {{ form_errors(form.dateEmbauche) }}
+                </div>
+
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn btn-ecoride btn-ecoride-primary px-4 py-2">
+                        Créer l’employé
+                    </button>
+                </div>
+
+            {{ form_end(form) }}
+        </div>
+    </div>
+</div>
+{% endblock %}

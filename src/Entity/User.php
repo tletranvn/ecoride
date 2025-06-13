@@ -97,6 +97,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Participation::class, mappedBy: 'user')]
     private Collection $participations;
 
+    /**
+     * @var Collection<int, Employe>
+     */
+    #[ORM\OneToMany(targetEntity: Employe::class, mappedBy: 'user')]
+    private Collection $employes;
+
     /** @throws \Exception */
     public function __construct()
     {
@@ -109,6 +115,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->avisEcrits = new ArrayCollection();
         $this->avisRecus = new ArrayCollection();
         $this->participations = new ArrayCollection();
+        $this->employes = new ArrayCollection();
     }
 
     /**
@@ -440,6 +447,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setUserType(?string $userType): self
     {
         $this->userType = $userType;
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Employe>
+     */
+    public function getEmployes(): Collection
+    {
+        return $this->employes;
+    }
+
+    public function addEmploye(Employe $employe): static
+    {
+        if (!$this->employes->contains($employe)) {
+            $this->employes->add($employe);
+            $employe->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEmploye(Employe $employe): static
+    {
+        if ($this->employes->removeElement($employe)) {
+            // set the owning side to null (unless already changed)
+            if ($employe->getUser() === $this) {
+                $employe->setUser(null);
+            }
+        }
+
         return $this;
     }
 
