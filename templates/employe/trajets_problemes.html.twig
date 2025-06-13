@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Trajets problématiques{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h2>🚨 Trajets signalés comme problématiques</h2>
+
+    {% if avisProblemes is empty %}
+        <div class="alert alert-info">Aucun trajet signalé comme problématique pour le moment.</div>
+    {% else %}
+        <table class="table table-bordered mt-4">
+            <thead>
+                <tr>
+                    <th># Trajet</th>
+                    <th>Chauffeur</th>
+                    <th>Passager</th>
+                    <th>Date</th>
+                    <th>Villes</th>
+                    <th>Commentaire</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for avis in avisProblemes %}
+                    {% if avis.trajet and avis.auteur and avis.cible %}
+                        <tr>
+                            <td>{{ avis.trajet.id }}</td>
+                            <td>
+                                {{ avis.cible.pseudo ?? 'N/A' }}<br>
+                                <small>{{ avis.cible.email ?? 'N/A' }}</small>
+                            </td>
+                            <td>
+                                {{ avis.auteur.pseudo ?? 'N/A' }}<br>
+                                <small>{{ avis.auteur.email ?? 'N/A' }}</small>
+                            </td>
+                            <td>{{ avis.trajet.dateDepart ? avis.trajet.dateDepart|date('d/m/Y H:i') : 'N/A' }}</td>
+                            <td>{{ avis.trajet.villeDepart ?? 'N/A' }} → {{ avis.trajet.villeArrivee ?? 'N/A' }}</td>
+                            <td>{{ avis.commentaire ?? '-' }}</td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+</div>
+{% endblock %}

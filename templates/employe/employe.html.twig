@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Espace Employé - Tableau de bord{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h1 class="mb-4">👷 Tableau de bord Employé</h1>
+
+    <p class="mb-3">Bienvenue, vous pouvez :</p>
+
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">📝 Avis à valider</h5>
+                    <p class="card-text">Consulter les avis laissés par les passagers en attente de validation.</p>
+                    <a href="{{ path('app_espace_employe_avis') }}" class="btn btn-primary">Voir les avis</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">🚨 Trajets signalés</h5>
+                    <p class="card-text">Lister les covoiturages ayant reçu des avis négatifs.</p>
+                    <a href="{{ path('app_espace_employe_trajets_problemes') }}" class="btn btn-danger">Voir les trajets</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

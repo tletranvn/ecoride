@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Avis en attente{% endblock %}
+
+{% block body %}
+
+    // Affichage des messages flash
+    {% for message in app.flashes('info') %}
+        <div class="alert alert-info">{{ message }}</div>
+    {% endfor %}
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">{{ message }}</div>
+    {% endfor %}
+
+    {% for message in app.flashes('danger') %}
+        <div class="alert alert-danger">{{ message }}</div>
+    {% endfor %}
+
+<div class="container mt-5">
+    <h2>📝 Avis à valider</h2>
+
+    {% if avisEnAttente is empty %}
+        <div class="alert alert-info">Aucun avis en attente de validation.</div>
+    {% else %}
+        <table class="table table-striped mt-4">
+            <thead>
+                <tr>
+                    <th>Note</th>
+                    <th>Commentaire</th>
+                    <th>Auteur</th>
+                    <th>Cible</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for avis in avisEnAttente %}
+                    <tr>
+                        <td>{{ avis.note }}</td>
+                        <td>{{ avis.commentaire }}</td>
+                        <td>{{ avis.auteur.pseudo }}</td>
+                        <td>{{ avis.cible.pseudo }}</td>
+                        <td>
+                            <a href="{{ path('app_espace_employe_avis_valider', {'id': avis.id}) }}" class="btn btn-success btn-sm">Valider</a>
+                            <a href="{{ path('app_espace_employe_avis_refuser', {'id': avis.id}) }}" class="btn btn-danger btn-sm">Refuser</a>
+                        </td>
+
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+</div>
+{% endblock %}

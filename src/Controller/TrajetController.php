@@ -30,6 +30,7 @@ class TrajetController extends AbstractController
         }
 
         // récupérer les paramètres s'ils existent
+        $id = $request->query->get('id'); // pour US12 l'employé peut voir le détail d'un trajet
         $villeDepart = $request->query->get('villeDepart');
         $villeArrivee = $request->query->get('villeArrivee');
         $date = $request->query->get('date');
@@ -82,6 +83,7 @@ class TrajetController extends AbstractController
         }
 
         // Récupérer l'utilisateur connecté
+        /** @var \App\Entity\User $user */ // On utilise le type hinting pour indiquer que l'utilisateur est de type User pour Intellephense
         $user = $this->getUser();
 
         // Vérifier que l'utilisateur est connecté
@@ -153,6 +155,7 @@ class TrajetController extends AbstractController
     #[Route('/trajet/{id}/annuler-participation', name: 'trajet_annuler_participation')]
     public function annulerParticipation(int $id, EntityManagerInterface $em): Response
     {
+        /** @var \App\Entity\User $user */
         $user = $this->getUser();
         $trajet = $em->getRepository(Trajet::class)->find($id);
 

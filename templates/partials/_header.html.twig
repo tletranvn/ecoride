@@ -38,6 +38,16 @@
                         <a class="nav-link" href="{{ path('app_register') }}">Créer un compte</a>
                     </li>
                 {% endif %}
+
+                <!-- US12 : ajouter un accès pour employé-->
+                {% if is_granted('ROLE_EMPLOYE') %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ path('app_espace_employe') }}">
+                            Espace Employé
+                        </a>
+                    </li>
+                {% endif %}
+
             </ul>
         </div>
     </div>

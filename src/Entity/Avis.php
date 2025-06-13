@@ -26,7 +26,7 @@ class Avis
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $updatedAt = null;
 
-    //US11 reporter un problème sur un trajet et attente validation par employé
+    //US11 et US12 reporter un problème sur un trajet et attente validation par employé
     #[ORM\Column(type: 'boolean')]
     private bool $isValidated = false;
 
