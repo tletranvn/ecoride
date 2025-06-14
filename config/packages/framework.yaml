@@ -10,7 +10,7 @@ framework:
     trusted_hosts: '%env(TRUSTED_HOSTS)%'
 
     # Note that the session will be started ONLY if you read or write from it.
-    session: true
+    # session: true
 
     #esi: true
     #fragments: true
