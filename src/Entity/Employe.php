@@ -22,7 +22,7 @@ class Employe
     private ?string $poste = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-    private ?\DateTime $dateEmbauche = null;
+    private ?\DateTimeImmutable $dateEmbauche = null;
 
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
@@ -59,12 +59,12 @@ class Employe
         return $this;
     }
 
-    public function getDateEmbauche(): ?\DateTime
+    public function getDateEmbauche(): ?\DateTimeImmutable
     {
         return $this->dateEmbauche;
     }
 
-    public function setDateEmbauche(?\DateTime $dateEmbauche): static
+    public function setDateEmbauche(?\DateTimeInterface $dateEmbauche): static
     {
         $this->dateEmbauche = $dateEmbauche;
 

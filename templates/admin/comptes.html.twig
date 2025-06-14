@@ -1,0 +1,69 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des comptes - EcoRide{% endblock %}
+
+{% block body %}
+<div class="container mt-5 mb-5">
+    <h2 class="text-center mb-4">Gestion des comptes</h2>
+
+    <!--Affichage des messages flash-->
+    {% for message in app.flashes('info') %}
+        <div class="alert alert-info text-center">
+            {{ message }}
+        </div>
+    {% endfor %}
+
+    {% for message in app.flashes('danger') %}
+        <div class="alert alert-danger text-center">
+            {{ message }}
+        </div>
+    {% endfor %}
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success text-center">
+            {{ message }}
+        </div>
+    {% endfor %}
+
+    <table class="table table-bordered">
+        <thead class="table-light">
+            <tr>
+                <th>#</th>
+                <th>Pseudo</th>
+                <th>Email</th>
+                <th>Rôle</th>
+                <th>Statut</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+                <tr>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.pseudo }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>
+                        {% if user.roles is not empty %}
+                            {{ user.roles[0]|replace({'ROLE_': ''})|lower|capitalize }}
+                        {% else %}
+                            Aucun
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if user.isActive %}
+                            ✅ Actif
+                        {% else %}
+                            🚫 Suspendu
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{{ path('app_admin_toggle_user_status', {'id': user.id}) }}"
+                           class="btn btn-sm {{ user.isActive ? 'btn-danger' : 'btn-success' }}">
+                            {{ user.isActive ? 'Suspendre' : 'Réactiver' }}
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

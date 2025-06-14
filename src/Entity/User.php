@@ -103,6 +103,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Employe::class, mappedBy: 'user')]
     private Collection $employes;
 
+    #[ORM\Column]
+    private ?bool $isActive = null;
+
     /** @throws \Exception */
     public function __construct()
     {
@@ -116,6 +119,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->avisRecus = new ArrayCollection();
         $this->participations = new ArrayCollection();
         $this->employes = new ArrayCollection();
+        $this->isActive = true; // US13 pourvoir voir/suspendre les cpmptes, active par défaut
     }
 
     /**
@@ -476,6 +480,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $employe->setUser(null);
             }
         }
+
+        return $this;
+    }
+
+    public function isActive(): ?bool
+    {
+        return $this->isActive;
+    }
+
+    public function setIsActive(bool $isActive): static
+    {
+        $this->isActive = $isActive;
 
         return $this;
     }

@@ -1,0 +1,78 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Statistiques - EcoRide{% endblock %}
+
+{% block body %}
+<div class="container mt-5 mb-5">
+    <h2 class="text-center mb-3">Statistiques de la plateforme</h2>
+
+    <p class="text-center mb-5">
+        Crédits gagnés par la plateforme : <strong>{{ totalCredits|default(0) }}</strong>
+    </p>
+
+    <div class="row mb-5">
+        <div class="col">
+            <h5 class="text-center mb-3">Nombre de covoiturages par jour</h5>
+            <canvas id="trajetsParJour" height="100"></canvas>
+        </div>
+    </div>
+
+    <div class="row mb-5">
+        <div class="col">
+            <h5 class="text-center mb-3">Crédits gagnés par jour</h5>
+            <canvas id="creditsParJour" height="100"></canvas>
+        </div>
+    </div>
+</div>
+
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    const labelsTrajets = {{ trajetsParJour|map(t => t.jour)|json_encode()|raw }};
+    const dataTrajets = {{ trajetsParJour|map(t => t.total)|json_encode()|raw }};
+
+    const labelsCredits = {{ creditsParJour|map(c => c.jour)|json_encode()|raw }};
+    const dataCredits = {{ creditsParJour|map(c => c.total)|json_encode()|raw }};
+
+    const ctx1 = document.getElementById('trajetsParJour');
+    new Chart(ctx1, {
+        type: 'bar',
+        data: {
+            labels: labelsTrajets,
+            datasets: [{
+                label: 'Trajets par jour',
+                data: dataTrajets,
+                backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: { beginAtZero: true }
+            }
+        }
+    });
+
+    const ctx2 = document.getElementById('creditsParJour');
+    new Chart(ctx2, {
+        type: 'line',
+        data: {
+            labels: labelsCredits,
+            datasets: [{
+                label: 'Crédits par jour',
+                data: dataCredits,
+                borderColor: 'rgba(255, 99, 132, 0.8)',
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                tension: 0.3,
+                fill: true
+            }]
+        },
+        options: {
+            scales: {
+                y: { beginAtZero: true }
+            }
+        }
+    });
+</script>
+{% endblock %}
