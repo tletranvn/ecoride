@@ -37,7 +37,7 @@
 
         <!-- Trajets réservés -->
         <section class="mb-5">
-            <h2>🧍‍♀️ Mes trajets réservés</h2>
+            <h2>Mes trajets réservés</h2>
             {% if participation is not empty %}
                 <ul class="list-group">
                     {% for p in participation %}
@@ -64,8 +64,8 @@
                 <p>Aucune réservation en cours.</p>
             {% endif %}
             <br>
-            <a href="{{ path('mes_validations') }}" class="btn btn-ecoride btn-ecoride-primary mt-4">
-                ✏️ Voir mes trajets à valider
+            <a href="{{ path('mes_validations') }}" class="btn btn-ecoride btn-ecoride-secondary me-2">
+                Voir mes trajets à valider
             </a>
         </section>
         
@@ -74,7 +74,7 @@
 
         <!-- Trajets proposés -->
         <section class="mb-5">
-            <h2>🚗 Mes trajets proposés</h2>
+            <h2>Mes trajets proposés</h2>
             {% if trajetsProposes is not empty %}
                 <ul class="list-group">
                     {% for trajet in trajetsProposes %}
@@ -104,7 +104,7 @@
 
         <!-- Véhicules -->
         <section class="mb-5">
-            <h2>🚙 Mes véhicules</h2>
+            <h2>Mes véhicules</h2>
             {% if vehicules is not empty %}
                 <ul class="list-group">
                     {% for v in vehicules %}

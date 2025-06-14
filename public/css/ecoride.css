@@ -1,8 +1,8 @@
 /* Palette EcoRide */
 :root {
-    --ecoride-bg: #FDF6EC;
-    --ecoride-dark: #244855;
-    --ecoride-text: #18160f;
+    --ecoride-bg: #0d1117;
+    --ecoride-dark: #343a40; /*#244855*/
+    --ecoride-text: #ffffff;
     --ecoride-accent: #E07A5F;
     --ecoride-soft: #D8C3A5;
     --ecoride-neutral: #A8B8A0;
@@ -12,6 +12,7 @@ body {
     background-color: var(--ecoride-bg);
     color: var(--ecoride-text);
     font-family: 'Helvetica', sans-serif;
+    font-size: 1.5rem;
 }
 
 a {
@@ -20,6 +21,7 @@ a {
 
 .navbar, footer {
     background-color: var(--ecoride-dark);
+    font-size: 1.5rem;
 }
 /*
 .btn-primary {
@@ -36,7 +38,7 @@ a {
 /*bouton connexion et inscription*/
 
 .btn-ecoride {
-    font-size: 1.1rem;
+    font-size: 1.5rem;
     padding: 0.75rem 1.5rem;
     border-radius: 0.5rem;
     font-weight: 500;
@@ -80,9 +82,11 @@ a {
 .card {
     background-color: var(--ecoride-neutral);
     color: var(--ecoride-bg);
+    font-size: 1.5rem;
 }
 
 .alert-success {
     background-color: var(--ecoride-neutral);
     color: var(--ecoride-bg);
+    font-size: 1.5rem;
 }
