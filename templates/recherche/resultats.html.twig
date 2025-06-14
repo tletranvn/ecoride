@@ -30,7 +30,7 @@
                 Aucun trajet disponible à cette date. Essayez une autre date ou consultez les prochaines disponibilités.
             </div>
         {% else %}
-            <form method="get" action="{{ path('app_recherche_resultats') }}" class="mb-4 p-4 border rounded bg-light">
+            <form method="get" action="{{ path('app_recherche_resultats') }}" class="mb-4 p-4 border rounded bg-dark">
                 <input type="hidden" name="villeDepart" value="{{ villeDepart }}">
                 <input type="hidden" name="villeArrivee" value="{{ villeArrivee }}">
                 <input type="hidden" name="date" value="{{ date }}">
