@@ -2,6 +2,13 @@
 framework:
     secret: '%env(APP_SECRET)%'
 
+    session:
+        handler_id: null
+        cookie_secure: auto
+
+    trusted_proxies: '%env(TRUSTED_PROXIES)%'
+    trusted_hosts: '%env(TRUSTED_HOSTS)%'
+
     # Note that the session will be started ONLY if you read or write from it.
     session: true
 
