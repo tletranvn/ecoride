@@ -106,6 +106,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?bool $isActive = null;
 
+    /**
+     * @var Collection<int, Administrateur>
+     */
+    #[ORM\OneToMany(targetEntity: Administrateur::class, mappedBy: 'user')]
+    private Collection $administrateurs;
+
     /** @throws \Exception */
     public function __construct()
     {
@@ -120,6 +126,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->participations = new ArrayCollection();
         $this->employes = new ArrayCollection();
         $this->isActive = true; // US13 pourvoir voir/suspendre les cpmptes, active par défaut
+        $this->administrateurs = new ArrayCollection();
     }
 
     /**
@@ -492,6 +499,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setIsActive(bool $isActive): static
     {
         $this->isActive = $isActive;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Administrateur>
+     */
+    public function getAdministrateurs(): Collection
+    {
+        return $this->administrateurs;
+    }
+
+    public function addAdministrateur(Administrateur $administrateur): static
+    {
+        if (!$this->administrateurs->contains($administrateur)) {
+            $this->administrateurs->add($administrateur);
+            $administrateur->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAdministrateur(Administrateur $administrateur): static
+    {
+        if ($this->administrateurs->removeElement($administrateur)) {
+            // set the owning side to null (unless already changed)
+            if ($administrateur->getUser() === $this) {
+                $administrateur->setUser(null);
+            }
+        }
 
         return $this;
     }
