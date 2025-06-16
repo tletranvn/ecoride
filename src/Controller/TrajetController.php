@@ -138,7 +138,7 @@ class TrajetController extends AbstractController
                     <li><strong>Prix :</strong> {$trajet->getPrix()} crédits</li>
                     <li><strong>Conducteur :</strong> {$trajet->getChauffeur()->getPseudo()}</li>
                 </ul>
-                <p>Bon voyage avec EcoRide ! 🌱</p>
+                <p>Bon voyage avec EcoRide !</p>
             ");
 
         $mailer->send($email); // Envoie effectif
