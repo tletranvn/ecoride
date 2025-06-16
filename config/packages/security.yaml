@@ -52,7 +52,10 @@ security:
         # - { path: ^/api/doc, roles: PUBLIC_ACCESS }
         # - { path: ^/api, roles: ROLE_USER }
 
-
+     #Hiérarchie des rôles
+    role_hierarchy:
+        ROLE_ADMIN: [ROLE_EMPLOYE, ROLE_USER]
+        ROLE_EMPLOYE: [ROLE_USER]
 when@test:
     security:
         password_hashers:
