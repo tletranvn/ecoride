@@ -30,16 +30,16 @@
 
                     <hr>
 
-                    <h6>🚗 Véhicule</h6>
+                    <h6>Véhicule</h6>
                     <p><strong>Marque :</strong> {{ trajet.vehicule.marque }}</p>
                     <p><strong>Modèle :</strong> {{ trajet.vehicule.modele }}</p>
                     <p><strong>Énergie :</strong> {{ trajet.vehicule.typeEnergie }}</p>
 
-                    <h6 class="mt-4">🧭 Préférences du conducteur</h6>
+                    <h6 class="mt-4">Préférences du conducteur</h6>
                     <p><strong>Fumeur :</strong> {{ trajet.vehicule.preferFumeur ? 'Oui' : 'Non' }}</p>
                     <p><strong>Animaux :</strong> {{ trajet.vehicule.preferChien ? 'Oui' : 'Non' }}</p>
 
-                    <h6 class="mt-4">📝 Avis sur le chauffeur</h6>
+                    <h6 class="mt-4">Avis sur le chauffeur</h6>
                     {% if trajet.chauffeur.avisRecus is empty %}
                         <p class="text-muted">Aucun avis pour ce chauffeur pour le moment.</p>
                     {% else %}
@@ -71,7 +71,7 @@
                               action="{{ path('trajet_participer', { id: trajet.id }) }}"
                               onsubmit="return confirmParticipation(event, {{ trajet.prix }})">
                             <button type="submit" class="btn btn-success btn-lg px-5 py-2">
-                                🚗 Participer à ce trajet
+                                Participer à ce trajet
                             </button>
                         </form>
                     </div>
